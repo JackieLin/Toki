@@ -1,0 +1,100 @@
+<!Doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Toki - an Incremental update tools</title>
+    <link type="text/css" rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+    <header class="head">
+        <div class="title">
+            <img src="images/Toki.png" alt="Toki"/>
+            <span>Toki - an Incremental update tools</span>
+        </div>
+        <div class="window">
+            <ul>
+                <li><span class="close"></span></li>    <!-- 关闭 -->
+                <li><span class="min"></span></li>    <!-- 最小化-->
+            </ul>
+        </div>
+    </header>
+
+    <div id="container">
+        <section class="command">
+            <ul>
+                <li><a href="#" class="scan"><span>Scan</span></a></li>
+                <li><a href="javascript:;" class="conf"><span>Generation Configuration</span></a></li>
+                <li><a href="javascript:;" class="commit"><span>Commit Updates</span></a></li>
+            </ul>
+
+            <!-- generate file configration -->
+            <div class="confpanel">
+                <header>
+                    Path Configuration
+                </header>
+                <ul>
+                    <li>Remote source path: <input type="text" placeholder="source path" class="sourcepath"/></li>
+                    <li>Remote Target path: <input type="text" placeholder="remote path" class="remotepath"/></li>
+                    <li class="sure"><div>Sure</div></li>
+                    <li class="cancel"><div>Cancel</div></li>
+                </ul>
+            </div>
+
+            <!-- commit updates -->
+            <div class="commitupdates">
+                <header>
+                    Commit Updates
+                </header>
+                <ul>
+                    <li>Remote host: <input type="text" placeholder="127.0.0.1" class="host"/></li>
+                    <li>Remote port: <input type="text" placeholder="22" class="port"/></li>
+                    <li>Remote username: <input type="text" placeholder="" class="username"/></li>
+                    <li>Password: <input type="password" placeholder="" class="password"/></li>
+                    <li class="surecommit"><div>Sure</div></li>
+                    <li class="cancelcommit"><div>Cancel</div></li>
+                </ul>
+            </div>
+        </section>
+        <section class="local">
+            <div class="path">
+                <span>Local folder: </span>
+                <input type="text" class="ipath"/>
+            </div>
+            <div class="file">
+                <ul class="localfile">
+                </ul>
+            </div>
+        </section>
+        <section class="remote">
+            <div class="path">
+                <span>Remote file: </span>
+                <input type="text" class="ipath"/>
+            </div>
+            <div class="file">
+                <ul class="remotefile">
+                </ul>
+
+                <!--<nav class="contextmenu">
+                    <ul>
+                        <li class="refresh">Refresh...</li>
+                        <li class="newfold">Create Folder...</li>
+                        <li class="newfile">Create file...</li>
+                        <li class="edit">Rename...</li>
+                        <li class="trash">Delete...</li>
+                    </ul>
+                </nav>-->
+            </div>
+        </section>
+    </div>
+    <footer>
+        <div class="author">
+            <span>—— by author Jackie Lin(<a href="http://forkme.info">http://forkme.info</a>)</span>
+        </div>
+    </footer>
+</body>
+<script type="text/javascript" src="javascript/jquery-2.1.0.min.js"></script>
+<script type="text/javascript" src="javascript/contextMenu.js"></script>
+<script type="text/javascript" src="javascript/controller.js"></script>
+<script type="text/javascript" src="javascript/remoteController.js"></script>
+<script type="text/javascript" src="javascript/view.js"></script>
+</html>

@@ -1,0 +1,21 @@
+{
+	"main": "main.html",
+	"name": "Toki",
+	"description": "Toki - an Incremental update tools",
+    "version": "v0.1.0",
+	"keywords": ["app", "increamental updates"],
+	"window": {
+		"icon": "images/favicon.png",
+		"toolbar": false,
+        "position": "center",
+		"width": 1200,
+		"height": 700,
+		"frame": false,
+        "show": false,
+        "debug": false
+	},
+
+    "dependencies": {
+        "ssh2": "*"
+    }
+}
