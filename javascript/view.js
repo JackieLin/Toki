@@ -54,7 +54,7 @@ $(function() {
      * @param controller
      * @param path
      */
-    showSubFolder = function(controller, type) {
+    showSubFolder = function(controller, type, flag) {
         if(!controller || !type) {
             console.log("controller and type must be exsist");
             return;
@@ -102,13 +102,18 @@ $(function() {
                 currentfolder = path;
                 showSubFolder(controller, classType);
             });
+
+            // flag true, show remote, false not show
+            if(flag) {
+                showSubFolder(controller, 'remotefile');
+            }
         });
     };
 
     var controller = new Controller('/');
 
-    showSubFolder(controller, 'localfile');
-    showSubFolder(controller, 'remotefile');
+    showSubFolder(controller, 'localfile', true);
+/*    showSubFolder(controller, 'remotefile');*/
 
     // register local and remote enter event
     $('.ipath').bind('keyup', function(event) {
