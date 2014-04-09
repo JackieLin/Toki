@@ -36,6 +36,17 @@ How to run Toki source code
 * Open console and input ```npm install``` to install dependence node_module;
 * Double click **nw.exe**(or in console input **nw** command to run);
 
+How to release Toki using source code
+===
+* Clone Toki to the local;
+* Download node.js **v0.10.x** and install;
+* Download node-webkit **v0.8.x** prebuilt binaries to your computer;
+* Open console and input ```npm install grunt-cli -g``` to install grunt-cli global;
+* Open console and input ```npm install --dev``` to install dependence node_module;
+* Open console and input ```grunt default``` to build the project;
+* Copy ffmpegsumo.dll, icudt.dll, libEGL.dll, libGLESv2.dll, nw.exe, nw.pak, nwsnapshot.exe files to project **build folder**;
+* Double click **nw.exe**(or in console input **nw** command to run);
+
 License
 ===
 ```Toki```'s code uses MIT lincense, see our ```LICENSE``` file.
