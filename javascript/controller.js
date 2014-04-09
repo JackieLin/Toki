@@ -33,20 +33,20 @@ Controller.prototype.setPath = function(path) {
  */
 Controller.prototype.copy = function(src, dst) {
     if(!src && !dst && !callback) {
-        console.warn("copy: src and dst and callback must be exists");
+        console.warn('copy: src and dst and callback must be exists');
         return;
     }
 
     var dstAttr = this.fileOperation.fileAttr(dst), srcAttr = this.fileOperation.fileAttr(src);
 
     if(dstAttr !== 'directory') {
-        console.warn("destination path must be directory!!");
+        console.warn('destination path must be directory!!');
         return;
     }
 
     // src is a file, just copy it
     if(srcAttr === 'file') {
-        var path = src.substring(src.lastIndexOf('/') + 1, src.length), dstpath = dst + "/" + path;
+        var path = src.substring(src.lastIndexOf('/') + 1, src.length), dstpath = dst + '/' + path;
         this.fileOperation.copyFile(src, dstpath);
 
     }
@@ -55,7 +55,7 @@ Controller.prototype.copy = function(src, dst) {
         var that = this;
         this.fileOperation.openDirPath(src, function(files) {
             files.forEach(function(item) {
-                var srcpath = src + "/" + item, dstpath = dst + "/" + item, srcAttr = that.fileOperation.fileAttr(srcpath);
+                var srcpath = src + '/' + item, dstpath = dst + '/' + item, srcAttr = that.fileOperation.fileAttr(srcpath);
 
                 if(srcAttr === 'file') {
                     that.fileOperation.copyFile(srcpath, dstpath);
@@ -88,7 +88,7 @@ Controller.prototype.mkdir = function(path, callback) {
 
 Controller.prototype.rename = function(oldpath, newpath, callback) {
     if(!oldpath || !newpath || !callback) {
-        console.warn("oldpath and newpath and callback must be exists");
+        console.warn('oldpath and newpath and callback must be exists');
         return;
     }
 
@@ -99,7 +99,7 @@ Controller.prototype.rename = function(oldpath, newpath, callback) {
 
 Controller.prototype.delete = function(filepath) {
     if(!filepath) {
-        console.warn("file path to delete is not exists");
+        console.warn('file path to delete is not exists');
         return;
     }
 
@@ -118,8 +118,9 @@ Controller.prototype.delete = function(filepath) {
                 return;
             }
 
-            for(var i = 0, t; t = files[i]; i++) {
-                that.delete(filepath + "/" + t);
+            for(var i = 0, length = files.length; i < length; i++) {
+                var t = files[i];
+                that.delete(filepath + '/' + t);
             }
 
             // delete parent path
@@ -149,7 +150,7 @@ Controller.prototype.newEmptyFile = function(filepath) {
  */
 Controller.prototype.geneConfiguration = function(sourcepath, remotepath, confpath, filepath, parentdir, callback){
     if(!sourcepath || !remotepath || !confpath || !filepath || !parentdir) {
-        console.error("confpath and filepath must be exists!!");
+        console.error('confpath and filepath must be exists!!');
         return;
     }
 
@@ -158,7 +159,7 @@ Controller.prototype.geneConfiguration = function(sourcepath, remotepath, confpa
         return targetpath + substring;
     };
 
-    if(this.result || this.result === undefined) this.result = "";
+    if(this.result || this.result === undefined) this.result = '';
     // generate conf to result
     this.geneConfResult(sourcepath, remotepath, filepath, parentdir, replacepath);
 
@@ -175,16 +176,17 @@ Controller.prototype.geneConfResult = function(sourcepath, remotepath, filepath,
 
     var stat = this.fileOperation.fileAttr(filepath);
     if(stat === 'file') {
-        this.result += source + " " + remote + "\n";
+        this.result += source + ' ' + remote + '\n';
     } else if(stat === 'directory') {
         var files = this.fileOperation.readdirSync(filepath);
 
-        for(var i = 0, t; t = files[i]; i++) {
-            stat = that.fileOperation.fileAttr(filepath + "/" + t);
+        for(var i = 0, length = files.length; i < length; i++) {
+            var t = files[i];
+            stat = that.fileOperation.fileAttr(filepath + '/' + t);
             if(stat === 'file') {
-                that.result += source + "/" + t + " " + remote + "/" + t + "\n";
+                that.result += source + '/' + t + ' ' + remote + '/' + t + '\n';
             } else if(stat === 'directory') {
-                that.geneConfResult(sourcepath, remotepath, filepath+"/"+t, parentdir, replacepath);
+                that.geneConfResult(sourcepath, remotepath, filepath+'/'+t, parentdir, replacepath);
             }
         }
     }
@@ -192,7 +194,7 @@ Controller.prototype.geneConfResult = function(sourcepath, remotepath, filepath,
 
 Controller.prototype.fileAttr = function(filepath) {
     if(!filepath) {
-        console.error("filepath must be exists!!");
+        console.error('filepath must be exists!!');
         return;
     }
 

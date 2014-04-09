@@ -14,7 +14,7 @@ $(function() {
     currWindow.show();
     // pretend to be closed already
     currWindow.on('close', function() {
-        if(window.confirm("Are you sure to close?")) {
+        if(window.confirm('Are you sure to close?')) {
             this.close(true);
         }
     });
@@ -39,13 +39,13 @@ $(function() {
      */
     var displayFile = function(path, name, type) {
         if(!path || !name || !type) {
-            console.log("file path and type must be exites");
+            console.log('file path and type must be exites');
             return;
         }
 
-        var result ="<li data-path='" + path + "'><img src='icons/" + type +
-                ".png' alt='" + name + "' width='50px' height='50px' title='" + name + "'/>" +
-                "<div title='" + name + "'>" + name + "</div>";
+        var result ='<li data-path="' + path + '"><img src="icons/' + type +
+                '.png" alt="' + name + '" width="50px" height="50px" title="' + name + '"/>' +
+                '<div title="' + name + '">' + name + '</div>';
         return result;
     },
 
@@ -56,7 +56,7 @@ $(function() {
      */
     showSubFolder = function(controller, type, flag) {
         if(!controller || !type) {
-            console.log("controller and type must be exsist");
+            console.log('controller and type must be exsist');
             return;
         }
 
@@ -68,7 +68,7 @@ $(function() {
          */
         controller.openDir(function(files) {
             // open current folder
-            var result = "";
+            var result = '';
             // 遍历所有files的值
             for(var key in files) {
                 if(files.hasOwnProperty(key)) {
@@ -89,7 +89,10 @@ $(function() {
                 $(target).addClass('fileclick');
 
                 // change current file
-                (type === 'localfile') ? $currentLocalfile = $(target) : $currentRemotefile = $(target);
+                /** javascript do not approve this usage **/
+                /*(type === 'localfile') ? $currentLocalfile = $(target) : $currentRemotefile = $(target);*/
+                $currentLocalfile = (type === 'localfile') ? $(target) : $currentLocalfile;
+                $currentRemotefile = (type === 'remotefile') ? $(target) : $currentRemotefile;
             });
 
             // when double click, open the sub floder
@@ -122,7 +125,7 @@ $(function() {
         if(event.keyCode === 13) {
             currentfolder = value;
             controller.setPath(value);
-            (type === 'local') ? showSubFolder(controller, 'localfile') : showSubFolder(controller, 'remotefile');
+            var subFolder = (type === 'local') ? showSubFolder(controller, 'localfile') : showSubFolder(controller, 'remotefile');
         }
     });
 
@@ -135,10 +138,11 @@ $(function() {
      */
     var registerResize = function() {
         if(arguments.length === 0) {
-            console.warn("registerResize: arguments length is 0");
+            console.warn('registerResize: arguments length is 0');
         }
 
-        for(var i = 0, t; t = arguments[i]; i++) {
+        for(var i = 0, length = arguments.length; i < length; i++) {
+            var t = arguments[i];
             resizeList.push(t);
         }
     }, resize = function() {
@@ -146,8 +150,8 @@ $(function() {
             return;
         }
         // iteator all the resize list
-        for(var i = 0, t; t = resizeList[i]; i++) {
-            var $ele = $(t), length = $ele.length;
+        for(var i = 0, resizelength = resizeList.length; i < resizelength; i++) {
+            var t = resizeList[i], $ele = $(t), length = $ele.length;
 
             if(length === 0) {
                 continue;
@@ -175,15 +179,15 @@ $(function() {
      */
     var recalculate = function (selector, position) {
         if(!selector || !position) {
-            console.warn("recalculate: selector and position must be exist");
+            console.warn('recalculate: selector and position must be exist');
         }
         var parentPosition = positionList[selector];
-        return {left: position['left'] - parentPosition['left'], top: position['top'] - parentPosition['top']};
+        return {left: position.left - parentPosition.left, top: position.top - parentPosition.top};
 
     }, menus = function(event) {
         var data = event.data;
         if(!data) {
-            console.log("menus: data must be exists");
+            console.log('menus: data must be exists');
             return;
         }
 
@@ -191,7 +195,7 @@ $(function() {
             binddata = data[2];
 
         if(!element instanceof jQuery) {
-            console.log("data element must be jQuery object");
+            console.log('data element must be jQuery object');
             return;
         }
 
@@ -201,7 +205,7 @@ $(function() {
 
         // show menu
         if(elementmenu.length > 0) {
-            elementmenu.css({'display': "block", 'left': position['left'], 'top': position['top']});
+            elementmenu.css({'display': 'block', 'left': position.left, 'top': position.top});
 
         } else {
             // new menu and show
@@ -221,12 +225,15 @@ $(function() {
             data = event.data[0];
 
         // first: delete li class
-        for(var i = 0, t; t = fileItems[i]; i++) {
+        for(var i = 0, length = fileItems.length; i < length; i++) {
+            var t = fileItems[i];
             $(t).removeClass('fileclick');
         }
 
         // second: delete selected element
-        (data === 'localfile') ? $currentLocalfile = null : $currentRemotefile = null;
+        /*(data === 'localfile') ? $currentLocalfile = null : $currentRemotefile = null;*/
+        $currentLocalfile = (data === 'localfile') ? null : $currentLocalfile;
+        $currentRemotefile = (data === 'remotefile') ? null : $currentRemotefile;
 
         // third: if element has navigation, hidden it
         // the context menu has been generate
@@ -240,12 +247,12 @@ $(function() {
         {'itemName': 'Upload...', 'itemClass': 'upload',
           'events': {'click': function() {
                if(!$currentLocalfile) {
-                   alert("One of local file must be selected!!");
+                   alert('One of local file must be selected!!');
                    return false;
                }
 
                if(!$currentRemotefile) {
-                   alert("One of remote diredtory must be selected!!");
+                   alert('One of remote diredtory must be selected!!');
                    return false;
                }
 
@@ -269,13 +276,13 @@ $(function() {
                    target = event.currentTarget;
 
                if(!srcpath) {
-                   alert("The system drive can not be new folder!!");
+                   alert('The system drive can not be new folder!!');
                    return false;
                }
 
                controller.mkdir(dstfolder, function(err) {
                    if(err) {
-                       alert("Create folder failed!!");
+                       alert('Create folder failed!!');
                        return;
                    }
                    var li = document.createElement('li'), img = document.createElement('img'), div = document.createElement('div');
@@ -286,7 +293,7 @@ $(function() {
                    $(div).attr({'title': 'newFolder', 'contenteditable': 'true'});
                    $(div).text('newFolder');
                    $(div).bind('blur paste copy cut', function(event) {
-                        var newfile = srcpath + "/" + $(div).text();
+                        var newfile = srcpath + '/' + $(div).text();
                         controller.rename(dstfolder, newfile, function() {
                             var prev = $(target).prev();
                             prev.trigger('click');   // refresh the folder
@@ -304,16 +311,16 @@ $(function() {
         {'itemName': 'Rename...', 'itemClass': 'edit', 'events': {'click': function() {}}},
         {'itemName': 'Delete...', 'itemClass': 'trash', 'events': {'click': function(event) {
             if(!$currentLocalfile) {
-                alert("It must be chosen one file to delete!!");
+                alert('It must be chosen one file to delete!!');
                 return false;
             }
 
             var target = event.currentTarget, filepath = $currentLocalfile.data('path'), refresh = $(target).siblings('.refresh');
-            if(window.confirm("Are you sure to remove " + filepath)) {
+            if(window.confirm('Are you sure to remove ' + filepath)) {
                 controller.delete(filepath);
 
                 refresh.trigger('click');
-                alert("Delete file success!!");
+                alert('Delete file success!!');
             }
         }}}
     ], remotebinddate = [
@@ -349,11 +356,11 @@ $(function() {
             parentpath = srcfile.substring(0, srcfile.lastIndexOf('/'));
 
         if(!sourcepath || !remotepath) {
-            alert("Source path and Remote path must be exisist!!");
+            alert('Source path and Remote path must be exisist!!');
             return false;
         }
         if(!$currentRemotefile) {
-            alert("Remote file to send should be chosen!!");
+            alert('Remote file to send should be chosen!!');
             return false;
         }
 
@@ -361,7 +368,7 @@ $(function() {
 
         var geneConf = function() {
             controller.geneConfiguration(sourcepath, remotepath, projectconffile, filepath, parentpath, function() {
-                alert("Generation Configuration success!!");
+                alert('Generation Configuration success!!');
                 // set display none
                 $('.confpanel').css('display', 'none');
             });
@@ -381,7 +388,7 @@ $(function() {
                 // first create folder, and create file
                 controller.mkdir(projectconfpath, function(err) {
                     if(err) {
-                        console.warn("Create folder failed:" + err);
+                        console.warn('Create folder failed:' + err);
                         return;
                     }
 
@@ -408,11 +415,11 @@ $(function() {
             host = $('.host').val(), port = $('.port').val(), username = $('.username').val(), password = $('.password').val();
 
         if(!$sourcepath) {
-            alert("Source path must be exisist!!");
+            alert('Source path must be exisist!!');
             return false;
         }
         if(!$currentRemotefile) {
-            alert("Remote file to send should be chosen!!");
+            alert('Remote file to send should be chosen!!');
             return false;
         }
 
@@ -421,7 +428,7 @@ $(function() {
         var fileAttr = controller.fileAttr(filepath);
 
         var hostpath =
-            $sourcepath + "/" + filepath.substring(filepath.lastIndexOf('/') + 1, filepath.length),
+            $sourcepath + '/' + filepath.substring(filepath.lastIndexOf('/') + 1, filepath.length),
         projectfile = process.cwd(), projectconfpath = projectfile + '/conf';   // This the shell path
 
         var remoteController = new RemoteController();
@@ -436,18 +443,18 @@ $(function() {
         if(fileAttr === 'directory') {
             remoteController.remoteMkdir(hostpath, function(err) {
                 if(err && err === 'loop') {
-                    alert("file mkdir failed, you can restart program to continue!!");
+                    alert('file mkdir failed, you can restart program to continue!!');
                     return;
                 }
 
                 remoteController.scp(filepath, hostpath, function(err) {
                     if(err) {
-                        alert("file scp failed!!");
+                        alert('file scp failed!!');
                         return;
                     }
                     remoteController.scp(projectconfpath, hostpath, function(err) {
                         if(err) {
-                            alert("scp file error!!");
+                            alert('scp file error!!');
                             return;
                         }
                         // don't forget to close connection
@@ -458,15 +465,15 @@ $(function() {
             });
 
         } else if(fileAttr === 'file') {
-            remoteController.remoteMkdir($sourcepath + "/toki", function(err) {
+            remoteController.remoteMkdir($sourcepath + '/toki', function(err) {
                 if(err && err === 'loop') {
-                    alert("file mkdir failed, you can restart program to continue!!");
+                    alert('file mkdir failed, you can restart program to continue!!');
                     return;
                 }
 
-                remoteController.scp(filepath, $sourcepath + "/toki", function(err) {
+                remoteController.scp(filepath, $sourcepath + '/toki', function(err) {
                     if(err) {
-                        alert("scp file error!!");
+                        alert('scp file error!!');
                         return;
                     }
 
@@ -486,13 +493,13 @@ $(function() {
                     function() {
                         // call shell to run
                         if(fileAttr === 'directory') {
-                            var shell = "bash " + hostpath + "/shells/replaceFiles.sh " + hostpath + "/shells/configuration.conf";
+                            var shell = 'bash ' + hostpath + '/shells/replaceFiles.sh ' + hostpath + '/shells/configuration.conf';
                             remoteController.executeCommand(shell, function(err, stream) {
                                 if(err) {
-                                    alert("executeCommand:: bash shell failed:" + err);
+                                    alert('executeCommand:: bash shell failed:' + err);
                                     return;
                                 }
-                                var result = "", tmp;
+                                var result = '', tmp;
                                 stream.on('data', function(data, extended) {
                                     tmp = (extended === 'stderr' ? 'STDERR: ' : 'STDOUT: ') + data;
                                     result += tmp;

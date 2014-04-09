@@ -1,11 +1,13 @@
 {
-    "node": true,
-    "esnext": true,
-    "curly": false,
-    "smarttabs": true,
-    "indent": 2,
-    "quotmark": "single",  /** 为了保证编程风格的统一 **/
-    "globals": {
-        "jQuery": true
-    }
+"node": true,
+"browser": true,
+"esnext": true,
+"curly": false,
+"smarttabs": true,
+"strict": false,
+"indent": 2,
+"quotmark": "single",  /** 为了保证编程风格的统一 **/
+"globals": {
+    "jQuery": true
+}
 }

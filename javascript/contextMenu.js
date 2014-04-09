@@ -32,12 +32,12 @@ var ContextMenu = (function(window, undefined) {
         var ul = document.createElement('ul');
 
         // iteator the bindData
-        for(var i = 0, t; t = bindData[i]; i++) {
-            var li = document.createElement('li');
+        for(var i = 0, length = bindData.length; i < length; i++) {
+            var li = document.createElement('li'), t = bindData[i];
             li.className = t.itemClass;
             li.innerText = t.itemName;
 
-            var events = t['events'];
+            var events = t.events;
 
             // register item event
             for(var key in events) {
