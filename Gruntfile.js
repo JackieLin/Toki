@@ -4,34 +4,20 @@
  * @content add grunt to build automation
  */
 module.exports = function(grunt) {
+    'use strict';
 
     // project config
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        watch: {
-            css: {
-                files: [
-                    '**/*.css'
-                ],
-                tasks: ['cssmin']
-            },
-            js: {
-                files: [
-                    '**/*.js',
-                    'Gruntfile.js'
-                ],
-                tasks: ['jshint']
-            }
-        },
 
         cssmin: {
             options: {
                 'keepSpecialComments': 0
             },
-            compress: {
+            combine: {
                 files: {
                     'assets/css/default.css': [
-                        'css/style.css'
+                        'css/*.css'
                     ]
                 }
             }
@@ -42,7 +28,18 @@ module.exports = function(grunt) {
                 jshintrc: '.jshintrc'
             },
 
-            all: ['Gruntfile.js', 'javascript/*.js']
+            files: ['Gruntfile.js', 'javascript/*.js', '!javascript/jquery-2.1.0.min.js']
+        },
+
+        watch: {
+            css: {
+                files: ['css/**/*.css'],
+                tasks: ['cssmin']
+            },
+            js: {
+                files: ['<%= jshint.files %>'],
+                tasks: ['jshint']
+            }
         }
     });
 
