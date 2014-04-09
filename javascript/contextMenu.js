@@ -12,7 +12,7 @@ var ContextMenu = (function(window, undefined) {
      */
     var ContextMenu = function(position, bindData) {
         if(!position || !bindData) {
-            console.log("position and bindData must be exsists");
+            console.log('position and bindData must be exists');
             return;
         }
 
@@ -26,8 +26,8 @@ var ContextMenu = (function(window, undefined) {
         navigation.className = 'contextmenu';
 
         // add position
-        navigation.style.left = position['left'] + 'px';
-        navigation.style.top = position['top'] + 'px';
+        navigation.style.left = position.left + 'px';
+        navigation.style.top = position.top + 'px';
 
         var ul = document.createElement('ul');
 

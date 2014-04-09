@@ -16,6 +16,12 @@
 	},
 
     "dependencies": {
-        "ssh2": "*"
+        "grunt": "*",
+        "grunt-contrib-jshint": "*",
+        "grunt-contrib-watch": "*",
+        "grunt-contrib-uglify": "*",
+        "grunt-contrib-cssmin": "*",
+        "grunt-htmlhint": "*",
+        "ssh2": "~0.2.21"
     }
 }
