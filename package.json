@@ -25,12 +25,12 @@
     },
 
     "devDependencies": {
-        "grunt": "*",
-        "grunt-contrib-jshint": "*",
-        "grunt-contrib-watch": "*",
-        "grunt-contrib-uglify": "*",
-        "grunt-contrib-cssmin": "*",
-        "grunt-htmlhint": "*",
-        "grunt-contrib-copy": "*"
+        "grunt": "~v0.4.0",
+        "grunt-contrib-jshint": "~v0.9.0",
+        "grunt-contrib-watch": "~v0.6.0",
+        "grunt-contrib-uglify": "~v0.4.0",
+        "grunt-contrib-cssmin": "~v0.9.0",
+        "grunt-htmlhint": "~v0.4.0",
+        "grunt-contrib-copy": "~v0.4.0"
     }
 }
