@@ -106,7 +106,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-htmlhint');
 
     // register default task
-/*    grunt.registerTask('test', ['watch']);
-    grunt.registerTask('build', [['cssmin', 'jshint', 'uglify', 'htmlhint', 'copy']]);*/
+    grunt.registerTask('test', ['jshint', 'htmlhint']);
+    /*grunt.registerTask('build', [['cssmin', 'jshint', 'uglify', 'htmlhint', 'copy']]);*/
     grunt.registerTask('default', ['jshint', 'htmlhint']);
 };
