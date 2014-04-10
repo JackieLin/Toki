@@ -110,22 +110,25 @@ Controller.prototype.delete = function(filepath) {
         this.fileOperation.unlinkSync(filepath);
     } else if (filestat === 'directory') {
         var that = this;
+        /**
+         * use synchronous way to make sure delete success
+         */
         // open directory file
-        this.fileOperation.openDirPath(filepath, function(files) {
-            // directory is empty
-            if(files.length === 0) {
-                that.fileOperation.rmdirSync(filepath);
-                return;
-            }
+        var files = this.fileOperation.openDirPathSync(filepath);
 
-            for(var i = 0, length = files.length; i < length; i++) {
-                var t = files[i];
-                that.delete(filepath + '/' + t);
-            }
-
-            // delete parent path
+        // directory is empty
+        if(files.length === 0) {
             that.fileOperation.rmdirSync(filepath);
-        });
+            return;
+        }
+
+        for(var i = 0, length = files.length; i < length; i++) {
+            var t = files[i];
+            that.delete(filepath + '/' + t);
+        }
+
+        // delete parent path
+        that.fileOperation.rmdirSync(filepath);
     }
 };
 

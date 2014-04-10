@@ -2,8 +2,8 @@
  * @author Jackie lin
  * @date 2014-04-09
  * @content add grunt to build automation
- * npm install --dev         development env
- * npm install --production  production env
+ * npm install --dev --save-dev        development env
+ * npm install --production --save-dev production env
  */
 module.exports = function(grunt) {
     'use strict';

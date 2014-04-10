@@ -3,10 +3,10 @@
 	"name": "Toki",
 	"description": "Toki - an Incremental update tools",
     "version": "v0.1.0",
-	"keywords": ["app", "increamental updates"],
+	"keywords": ["Toki", "app", "increamental updates"],
 	"window": {
 		"icon": "images/favicon.png",
-		"toolbar": false,
+		"toolbar": true,
         "position": "center",
 		"width": 1200,
 		"height": 700,
@@ -14,6 +14,11 @@
         "show": false,
         "debug": false
 	},
+
+    "repository": {
+        "type" : "git",
+        "url" : "https://github.com/JackieLin/Toki"
+    },
 
     "dependencies": {
         "ssh2": "~0.2.21"
