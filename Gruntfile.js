@@ -4,6 +4,7 @@
  * @content add grunt to build automation
  * npm install --dev --save-dev        development env
  * npm install --production --save-dev production env
+ * To test travis cli
  */
 module.exports = function(grunt) {
     'use strict';
