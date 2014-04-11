@@ -20,6 +20,13 @@
         "url" : "https://github.com/JackieLin/Toki"
     },
 
+    "os": ["win32"],
+
+    "scripts": {
+        "start": "nw",
+        "test": "grunt test"
+    },
+
     "dependencies": {
         "ssh2": "~0.2.21"
     },
