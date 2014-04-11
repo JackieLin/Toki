@@ -114,7 +114,7 @@ Controller.prototype.delete = function(filepath) {
          * use synchronous way to make sure delete success
          */
         // open directory file
-        var files = this.fileOperation.openDirPathSync(filepath);
+        var files = this.fileOperation.readdirSync(filepath);
 
         // directory is empty
         if(files.length === 0) {

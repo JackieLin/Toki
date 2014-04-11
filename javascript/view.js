@@ -360,11 +360,14 @@ $(function() {
             return false;
         }
         if(!$currentRemotefile) {
-            alert('Remote file to send should be chosen!!');
-            return false;
-        }
+            console.warn('The best way is that one of file should be choosen!');
 
-        filepath = $currentRemotefile.data('path');
+            // user do not choose any folder, use current folder
+            filepath = parentpath;
+            parentpath = parentpath.substring(0, parentpath.lastIndexOf('/'));
+        } else {
+            filepath = $currentRemotefile.data('path');
+        }
 
         var geneConf = function() {
             controller.geneConfiguration(sourcepath, remotepath, projectconffile, filepath, parentpath, function() {
@@ -402,7 +405,6 @@ $(function() {
     $('.cancel').bind('click', function() {
         $('.confpanel').css('display', 'none');
     });
-
     /**********************************************************************
      ***************************提交更新部分********************************
      **********************************************************************/
