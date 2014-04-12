@@ -350,7 +350,28 @@ $(function() {
                 });
           }}
         },
-        {'itemName': 'Rename...', 'itemClass': 'edit', 'events': {'click': function() {}}},
+        {'itemName': 'Rename...', 'itemClass': 'edit', 'events': {'click': function() {
+                if(!$currentLocalfile) {
+                    alert('Local file must be chosen!!');
+                    return;
+                }
+
+                var div = $currentLocalfile.children('div'), filepath = $currentLocalfile.data('path'),
+                    parentpath = filepath.substring(0, filepath.lastIndexOf('/'));
+
+                // first, set field editable
+                div.attr({'contenteditable': 'true'});
+
+                div.bind('blur paste copy cut', function(event) {
+                    var newfile = parentpath + '/' + div.text();
+                    controller.rename(filepath, newfile, function() {
+                        alert('Rename file is OK!');
+                        var prev = $(target).prev().prev().prev();
+                        prev.trigger('click');   // refresh the folder
+                    });
+                });
+            }}
+        },
         {'itemName': 'Delete...', 'itemClass': 'trash', 'events': {'click': function(event) {
             if(!$currentLocalfile) {
                 alert('It must be chosen one file to delete!!');
