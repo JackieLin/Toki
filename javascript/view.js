@@ -307,7 +307,49 @@ $(function() {
                });
           }}
         },
-        {'itemName': 'Create file...', 'itemClass': 'newfile', 'events': {'click': function() {}}},
+        {'itemName': 'Create file...', 'itemClass': 'newfile', 'events': {'click': function() {
+                var srcfile = $('.local .localfile > li:first').data('path'),
+                    srcpath = srcfile.substring(0, srcfile.lastIndexOf('/')),
+                    $currentlist = $('.local .localfile'), dstfile = srcpath + '/' + 'newFile',
+                    target = event.currentTarget;
+
+                if(!srcpath) {
+                    alert('The system drive can not be new folder!!');
+                    return false;
+                }
+
+                // new file and add to the folder
+                controller.newFileIgnoreExists(dstfile, function(err, fd) {
+                    if(err) {
+                        alert('Sorry, new file failure');
+                        return;
+                    }
+
+                    // close file first
+                    controller.closeFile(fd, function() {
+                        var li = document.createElement('li'), img = document.createElement('img'), div = document.createElement('div');
+
+                        // set value
+                        $(li).attr('data-path', dstfile);
+                        $(img).attr({'src': 'icons/blank.png', 'alt': 'newFile', 'width': '50px', 'height': '50px', 'title': 'newFile'});
+                        $(div).attr({'title': 'newFile', 'contenteditable': 'true'});
+                        $(div).text('newFile');
+                        $(div).bind('blur paste copy cut', function(event) {
+                            var newfile = srcpath + '/' + $(div).text();
+                            controller.rename(dstfile, newfile, function() {
+                                var prev = $(target).prev().prev();
+                                prev.trigger('click');   // refresh the folder
+                            });
+                        });
+
+                        li.appendChild(img);
+                        li.appendChild(div);
+
+                        $currentlist.append(li);
+                    });
+                });
+          }}
+        },
         {'itemName': 'Rename...', 'itemClass': 'edit', 'events': {'click': function() {}}},
         {'itemName': 'Delete...', 'itemClass': 'trash', 'events': {'click': function(event) {
             if(!$currentLocalfile) {

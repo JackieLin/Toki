@@ -203,3 +203,31 @@ Controller.prototype.fileAttr = function(filepath) {
 
     return this.fileOperation.fileAttr(filepath);
 };
+
+/**
+ * new file without judge whether file is exists
+ * @param filepath
+ * @param callback
+ */
+Controller.prototype.newFileIgnoreExists = function(filepath, callback) {
+    if(!filepath && !callback) {
+        console.warn('newFileIgnoreExists:: filepath and callback function must be exists!!');
+        return;
+    }
+
+    this.fileOperation.openFile(filepath, 'w', callback);
+};
+
+/**
+ * close file by fd
+ * @param fd
+ * @param callback
+ */
+Controller.prototype.closeFile = function(fd, callback) {
+    if(!fd && !callback) {
+        console.warn('closeFile:: fd and callback must be exists!!');
+        return;
+    }
+
+    this.fileOperation.closeFile(fd, callback);
+};
