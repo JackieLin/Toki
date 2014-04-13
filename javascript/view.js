@@ -446,6 +446,14 @@ $(function() {
             filepath = $currentRemotefile.data('path');
         }
 
+        // sourcepath and remotepath ignore last /
+        if(sourcepath.lastIndexOf('/') === sourcepath.length -1) {
+            sourcepath = sourcepath.substring(0, sourcepath.length - 1);
+        }
+        if(remotepath.lastIndexOf('/') === remotepath.length - 1) {
+            remotepath = remotepath.substring(0, remotepath.length - 1);
+        }
+
         var geneConf = function() {
             controller.geneConfiguration(sourcepath, remotepath, projectconffile, filepath, parentpath, function() {
                 alert('Generation Configuration success!!');
@@ -494,12 +502,16 @@ $(function() {
             host = $('.host').val(), port = $('.port').val(), username = $('.username').val(), password = $('.password').val();
 
         if(!$sourcepath) {
-            alert('Source path must be exisist!!');
+            alert('Source path must be exists!!');
             return false;
         }
         if(!$currentRemotefile) {
             alert('Remote file to send should be chosen!!');
             return false;
+        }
+
+        if($sourcepath.lastIndexOf('/') !== $sourcepath.length - 1) {
+            $sourcepath = $sourcepath + '/';
         }
 
         filepath = $currentRemotefile.data('path');

@@ -45,14 +45,18 @@ do
 	    continue
     fi
 
-    if [ ! -d $targetfile ];then
-        #echo "Sorry, the target directory $targetfile is not exists"
-	    mkdir -p $targetfile
-        #continue
+    # judge whether target is file or not
+    if [ `expr index "$targetfile" "."` -eq 0 ];then
+        if [ ! -d $targetfile ];then
+            #echo "Sorry, the target directory $targetfile is not exists"
+            mkdir -p $targetfile
+            #continue
+        fi
     fi
 
     # replace
     cp -f $sourcefile $targetfile
 done
 
+echo "Replace file success!"
 exit
