@@ -49,8 +49,8 @@ RemoteController.prototype.sshEnd = function() {
     this.remoteFileOperation.sshEnd();
 };
 
-RemoteController.prototype.scpClose = function() {
-    this.remoteFileOperation.scpClose();
+RemoteController.prototype.scpClose = function(callback) {
+    this.remoteFileOperation.scpClose(callback);
 };
 
 RemoteController.prototype.executeCommand = function(command, callback) {

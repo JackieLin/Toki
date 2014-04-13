@@ -15,7 +15,15 @@ $(function() {
     // pretend to be closed already
     currWindow.on('close', function() {
         if(window.confirm('Are you sure to close?')) {
-            this.close(true);
+            try {
+                // don't forget to close connection
+                remoteController.scpClose(function() {
+                    this.close(true);
+                });
+            } catch (e) {
+                console.log('error:' + e);
+                this.close(true);
+            }
         }
     });
 
@@ -418,12 +426,18 @@ $(function() {
         var srcfile = $('.remote .remotefile > li:first').data('path'),
             parentpath = srcfile.substring(0, srcfile.lastIndexOf('/'));
 
+        // parent path is not exists, means that now it is root
+        if(!parentpath) {
+            alert('Sorry, remote file path must not be root path');
+            return false;
+        }
+
         if(!sourcepath || !remotepath) {
-            alert('Source path and Remote path must be exisist!!');
+            alert('Source path and Remote path must be exists!!');
             return false;
         }
         if(!$currentRemotefile) {
-            console.warn('The best way is that one of file should be choosen!');
+            console.warn('The best way is that one of file should be chosen!');
 
             // user do not choose any folder, use current folder
             filepath = parentpath;
@@ -507,14 +521,14 @@ $(function() {
 
         if(fileAttr === 'directory') {
             remoteController.remoteMkdir(hostpath, function(err) {
-                if(err && err === 'loop') {
+                if(err) {
                     alert('file mkdir failed, you can restart program to continue!!');
                     return;
                 }
 
                 remoteController.scp(filepath, hostpath, function(err) {
                     if(err) {
-                        alert('file scp failed!!');
+                        alert('file scp failed::' + err);
                         return;
                     }
                     remoteController.scp(projectconfpath, hostpath, function(err) {
@@ -522,17 +536,15 @@ $(function() {
                             alert('scp file error!!');
                             return;
                         }
-                        // don't forget to close connection
-                        remoteController.scpClose();
                         execSSH();
                     });
                 });
             });
 
         } else if(fileAttr === 'file') {
-            remoteController.remoteMkdir($sourcepath + '/toki', function(err) {
-                if(err && err === 'loop') {
-                    alert('file mkdir failed, you can restart program to continue!!');
+            /*remoteController.remoteMkdir($sourcepath + '/toki', function(err) {
+                if(err) {
+                    alert('Remote create folder error::' + err);
                     return;
                 }
 
@@ -546,6 +558,21 @@ $(function() {
                     remoteController.scpClose();
                     execSSH();
                 });
+            });*/
+
+            remoteController.scp(filepath, $sourcepath, function(err) {
+                if(err) {
+                    alert('scp file error::' + err);
+                    return;
+                }
+
+                remoteController.scp(projectconfpath, $sourcepath, function(err) {
+                    if(err) {
+                        alert('scp file error::' + err);
+                        return;
+                    }
+                    execSSH();
+                });
             });
         }
 
@@ -557,52 +584,32 @@ $(function() {
             remoteController.registerEvent(['ready', 'error', 'end', 'close'],[
                     function() {
                         // call shell to run
-                        if(fileAttr === 'directory') {
-                            var shell = 'bash ' + hostpath + '/shells/replaceFiles.sh ' + hostpath + '/shells/configuration.conf';
-                            remoteController.executeCommand(shell, function(err, stream) {
-                                if(err) {
-                                    alert('executeCommand:: bash shell failed:' + err);
-                                    return;
-                                }
-                                var result = '', tmp;
-                                stream.on('data', function(data, extended) {
-                                    tmp = (extended === 'stderr' ? 'STDERR: ' : 'STDOUT: ') + data;
-                                    result += tmp;
-                                });
-                                stream.on('end', function() {
-                                    console.log('Stream :: EOF');
-                                });
-                                stream.on('close', function() {
-                                    console.log('Stream :: close');
-                                });
-                                stream.on('exit', function(code, signal) {
-                                    console.log('Stream :: exit :: code: ' + code + ', signal: ' + signal);
-                                    alert(result);
-                                    console.log(result);
-                                    remoteController.sshEnd();
-                                });
+                        var shell = (fileAttr === 'directory') ? 'bash ' + hostpath + '/shells/replaceFiles.sh ' + hostpath + '/shells/configuration.conf' :
+                            'bash ' + $sourcepath + 'shells/replaceFiles.sh ' + $sourcepath + 'shells/configuration.conf';
+
+                        remoteController.executeCommand(shell, function(err, stream) {
+                            if(err) {
+                                alert('executeCommand:: bash shell failed:' + err);
+                                return;
+                            }
+                            var result = '', tmp;
+                            stream.on('data', function(data, extended) {
+                                tmp = (extended === 'stderr' ? 'STDERR: ' : 'STDOUT: ') + data;
+                                result += tmp;
                             });
-                        }
-                        /*if(fileAttr === 'directory') {
-                         var hostpath =
-                         $sourcepath + "/" + filepath.substring(filepath.lastIndexOf('/') + 1, filepath.length);
-                         // mkdir directory
-                         remoteController.remoteMkdir(hostpath, function(err) {
-                         if(err['type'] === 'FAILURE') {
-                         console.log("mkdir file is error!!");
-                         }
-
-                         remoteController.scp(filepath, hostpath, function(err) {
-                         console.log("scp error:" + err);
-                         });
-
-                         remoteController.sshEnd();
-                         // scp file
-                         controller.scp(filepath, hostpath, function() {
-                         alert("success");
-                         });
-                         });
-                         }*/
+                            stream.on('end', function() {
+                                console.log('Stream :: EOF');
+                            });
+                            stream.on('close', function() {
+                                console.log('Stream :: close');
+                            });
+                            stream.on('exit', function(code, signal) {
+                                console.log('Stream :: exit :: code: ' + code + ', signal: ' + signal);
+                                alert(result);
+                                console.log(result);
+                                remoteController.sshEnd();
+                            });
+                        });
                     }, function(err) {
                         console.log('Connection :: error :: ' + err);
                     }, function() {

@@ -27,7 +27,7 @@ file=${1}
 
 
 if [ ! -f "$file" ];then
-   echo "The file $file is not exsist!!"
+   echo "The file $file is not exists!!"
    exit 1
 fi
 
@@ -42,12 +42,12 @@ do
     
     if [ ! -f $sourcefile ];then
         echo "Sorry, the source file $sourcefile is not exists"
-	continue	
+	    continue
     fi
 
     if [ ! -d $targetfile ];then
-        echo "Sorry, the target directory $targetfile is not exists"
-	mkdir -p $targetfile
+        #echo "Sorry, the target directory $targetfile is not exists"
+	    mkdir -p $targetfile
         #continue
     fi
 
