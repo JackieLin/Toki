@@ -40,8 +40,8 @@ $(function() {
      ***************************文件处理部分*******************************
      **********************************************************************/
     // current click local file and remote file
-    var $currentLocalfile = null, $currentRemotefile = null, currentfolder = '/';
-    /**
+    var $currentLocalfile = null, $currentRemotefile = null, currentLocalFolder = '/',currentRemoteFolder = '/';
+     /**
      *   input path type
      *   output li string
      */
@@ -83,6 +83,7 @@ $(function() {
                     result += displayFile(key, key.substring(key.lastIndexOf('/') + 1, key.length), files[key]);
                 }
             }
+            var currentfolder = (type === 'localfile') ? currentLocalFolder : currentRemoteFolder;
             filepath.value = currentfolder;
             $files.html(result);
 
@@ -110,7 +111,8 @@ $(function() {
                     classType = $(target).parent().attr('class');
 
                 controller.setPath(path);
-                currentfolder = path;
+                currentLocalFolder = (type === 'localfile') ? path : currentLocalFolder;
+                currentRemoteFolder = (type === 'remotefile') ? path : currentRemoteFolder;
                 showSubFolder(controller, classType);
             });
 
@@ -131,7 +133,8 @@ $(function() {
         var target = event.currentTarget, $grandfather = $(target).parent().parent(),
         type = $grandfather.attr('class'), value = target.value;
         if(event.keyCode === 13) {
-            currentfolder = value;
+            currentLocalFolder = (type === 'local') ? value : currentLocalFolder;
+            currentRemoteFolder = (type === 'remote') ? value : currentRemoteFolder;
             controller.setPath(value);
             var subFolder = (type === 'local') ? showSubFolder(controller, 'localfile') : showSubFolder(controller, 'remotefile');
         }
@@ -406,11 +409,129 @@ $(function() {
             }
         }}}
     ], remotebinddate = [
-        {'itemName': 'Refresh...', 'itemClass': 'refresh', 'events': {'click': function() {}}},
-        {'itemName': 'Create Folder...', 'itemClass': 'newfold', 'events': {'click': function() {}}},
-        {'itemName': 'Create file...', 'itemClass': 'newfile', 'events': {'click': function() {}}},
-        {'itemName': 'Rename...', 'itemClass': 'edit', 'events': {'click': function() {}}},
-        {'itemName': 'Delete...', 'itemClass': 'trash', 'events': {'click': function() {}}}
+        {'itemName': 'Refresh...', 'itemClass': 'refresh', 'events': {'click': function() {
+            var srcfile = $('.remote .remotefile > li:first').data('path'),
+                srcpath = srcfile.substring(0, srcfile.lastIndexOf('/'));
+
+            if(!srcpath) srcpath = '/';
+            controller.setPath(srcpath);
+            // refresh
+            showSubFolder(controller, 'remotefile');
+        }}},
+        {'itemName': 'Create Folder...', 'itemClass': 'newfold', 'events': {'click': function(event) {
+            var srcfile = $('.remote .remotefile > li:first').data('path'),
+                srcpath = srcfile.substring(0, srcfile.lastIndexOf('/')),
+                $currentlist = $('.remote .remotefile'), dstfolder = srcpath + '/' + 'newFolder',
+                target = event.currentTarget;
+
+            if(!srcpath) {
+                alert('The system drive can not be new folder!!');
+                return false;
+            }
+
+            controller.mkdir(dstfolder, function(err) {
+                if(err) {
+                    alert('Create folder failed!!');
+                    return;
+                }
+                var li = document.createElement('li'), img = document.createElement('img'), div = document.createElement('div');
+
+                // set value
+                $(li).attr('data-path', dstfolder);
+                $(img).attr({'src': 'icons/folder.png', 'alt': 'newFolder', 'width': '50px', 'height': '50px', 'title': 'newFolder'});
+                $(div).attr({'title': 'newFolder', 'contenteditable': 'true'});
+                $(div).text('newFolder');
+                $(div).bind('blur paste copy cut', function(event) {
+                    var newfile = srcpath + '/' + $(div).text();
+                    controller.rename(dstfolder, newfile, function() {
+                        var prev = $(target).prev();
+                        prev.trigger('click');   // refresh the folder
+                    });
+                });
+
+                li.appendChild(img);
+                li.appendChild(div);
+
+                $currentlist.append(li);
+            });
+        }}},
+        {'itemName': 'Create file...', 'itemClass': 'newfile', 'events': {'click': function() {
+            var srcfile = $('.remote .remotefile > li:first').data('path'),
+                srcpath = srcfile.substring(0, srcfile.lastIndexOf('/')),
+                $currentlist = $('.remote .remotefile'), dstfile = srcpath + '/' + 'newFile',
+                target = event.currentTarget;
+
+            if(!srcpath) {
+                alert('The system drive can not be new folder!!');
+                return false;
+            }
+
+            // new file and add to the folder
+            controller.newFileIgnoreExists(dstfile, function(err, fd) {
+                if(err) {
+                    alert('Sorry, new file failure');
+                    return;
+                }
+
+                // close file first
+                controller.closeFile(fd, function() {
+                    var li = document.createElement('li'), img = document.createElement('img'), div = document.createElement('div');
+
+                    // set value
+                    $(li).attr('data-path', dstfile);
+                    $(img).attr({'src': 'icons/blank.png', 'alt': 'newFile', 'width': '50px', 'height': '50px', 'title': 'newFile'});
+                    $(div).attr({'title': 'newFile', 'contenteditable': 'true'});
+                    $(div).text('newFile');
+                    $(div).bind('blur paste copy cut', function(event) {
+                        var newfile = srcpath + '/' + $(div).text();
+                        controller.rename(dstfile, newfile, function() {
+                            var prev = $(target).prev().prev();
+                            prev.trigger('click');   // refresh the folder
+                        });
+                    });
+
+                    li.appendChild(img);
+                    li.appendChild(div);
+
+                    $currentlist.append(li);
+                });
+            });
+        }}},
+        {'itemName': 'Rename...', 'itemClass': 'edit', 'events': {'click': function() {
+            if(!$currentRemotefile) {
+                alert('Remote file must be chosen!!');
+                return;
+            }
+
+            var div = $currentRemotefile.children('div'), filepath = $currentRemotefile.data('path'),
+                parentpath = filepath.substring(0, filepath.lastIndexOf('/'));
+
+            // first, set field editable
+            div.attr({'contenteditable': 'true'});
+
+            div.bind('blur paste copy cut', function(event) {
+                var newfile = parentpath + '/' + div.text();
+                controller.rename(filepath, newfile, function() {
+                    alert('Rename file is OK!');
+                    var prev = $(target).prev().prev().prev();
+                    prev.trigger('click');   // refresh the folder
+                });
+            });
+        }}},
+        {'itemName': 'Delete...', 'itemClass': 'trash', 'events': {'click': function() {
+            if(!$currentRemotefile) {
+                alert('It must be chosen one file to delete!!');
+                return false;
+            }
+
+            var target = event.currentTarget, filepath = $currentRemotefile.data('path'), refresh = $(target).siblings('.refresh');
+            if(window.confirm('Are you sure to remove ' + filepath)) {
+                controller.delete(filepath);
+
+                refresh.trigger('click');
+                alert('Delete file success!!');
+            }
+        }}}
     ];
     // register contextmenu event
     $localfileobj.bind('contextmenu', [$localfileobj, '.local > .file', localbinddata], menus);
