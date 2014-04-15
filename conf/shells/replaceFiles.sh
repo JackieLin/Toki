@@ -27,7 +27,7 @@ file=${1}
 
 
 if [ ! -f "$file" ];then
-   echo "The file $file is not exsist!!"
+   echo "The file $file is not exists!!"
    exit 1
 fi
 
@@ -42,17 +42,21 @@ do
     
     if [ ! -f $sourcefile ];then
         echo "Sorry, the source file $sourcefile is not exists"
-	continue	
+	    continue
     fi
 
-    if [ ! -d $targetfile ];then
-        echo "Sorry, the target directory $targetfile is not exists"
-	mkdir -p $targetfile
-        #continue
+    # judge whether target is file or not
+    if [ `expr index "$targetfile" "."` -eq 0 ];then
+        if [ ! -d $targetfile ];then
+            #echo "Sorry, the target directory $targetfile is not exists"
+            mkdir -p $targetfile
+            #continue
+        fi
     fi
 
     # replace
     cp -f $sourcefile $targetfile
 done
 
+echo "Replace file success!"
 exit

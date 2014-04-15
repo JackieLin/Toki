@@ -44,7 +44,7 @@ module.exports = function(grunt) {
                 jshintrc: '.jshintrc'
             },
 
-            files: ['Gruntfile.js', 'javascript/*.js', '!javascript/jquery-2.1.0.min.js']
+            files: ['Gruntfile.js', 'javascript/*.js', 'node_modules/*.js', '!javascript/jquery-2.1.0.min.js']
         },
 
         uglify: {
