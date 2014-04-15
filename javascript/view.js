@@ -253,18 +253,29 @@ $(function() {
 
     var localbinddata = [
         {'itemName': 'Upload...', 'itemClass': 'upload',
-          'events': {'click': function() {
+          'events': {'click': function(event) {
                if(!$currentLocalfile) {
                    alert('One of local file must be selected!!');
                    return false;
                }
 
+               var remotepath = ($currentRemotefile) ? $currentRemotefile.data('path') : '';
                if(!$currentRemotefile) {
-                   alert('One of remote diredtory must be selected!!');
-                   return false;
+                   /*alert('One of remote diredtory must be selected!!');*/
+
+                   // user do not choose any folder, use current folder
+                   var subpath = $('.remotefile > li:first').data('path'), lastDelimiter = subpath.lastIndexOf('/');
+
+                   if(lastDelimiter === -1) {
+                       alert('Sorry, the system root should not upload!!');
+                       return false;
+                   }
+
+                   // change remotepath
+                   remotepath = subpath.substring(0, lastDelimiter);
                }
 
-               controller.copyFile($currentLocalfile.data('path'), $currentRemotefile.data('path'));
+               controller.copyFile($currentLocalfile.data('path'), remotepath);
           }}
         },
         {'itemName': 'Refresh...', 'itemClass': 'refresh', 'events': {'click': function() {
