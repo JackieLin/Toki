@@ -361,22 +361,22 @@ $(function() {
                 });
           }}
         },
-        {'itemName': 'Rename...', 'itemClass': 'edit', 'events': {'click': function() {
+        {'itemName': 'Rename...', 'itemClass': 'edit', 'events': {'click': function(event) {
                 if(!$currentLocalfile) {
                     alert('Local file must be chosen!!');
                     return;
                 }
 
                 var div = $currentLocalfile.children('div'), filepath = $currentLocalfile.data('path'),
-                    parentpath = filepath.substring(0, filepath.lastIndexOf('/'));
+                    parentpath = filepath.substring(0, filepath.lastIndexOf('/')),
+                    target = event.currentTarget;
 
                 // first, set field editable
                 div.attr({'contenteditable': 'true'});
 
-                div.bind('blur paste copy cut', function(event) {
+                div.bind('blur paste copy cut', function() {
                     var newfile = parentpath + '/' + div.text();
                     controller.rename(filepath, newfile, function() {
-                        alert('Rename file is OK!');
                         var prev = $(target).prev().prev().prev();
                         prev.trigger('click');   // refresh the folder
                     });
@@ -394,7 +394,6 @@ $(function() {
                 controller.delete(filepath);
 
                 refresh.trigger('click');
-                alert('Delete file success!!');
             }
         }}}
     ], remotebinddate = [
@@ -478,22 +477,22 @@ $(function() {
                 });
             });
         }}},
-        {'itemName': 'Rename...', 'itemClass': 'edit', 'events': {'click': function() {
+        {'itemName': 'Rename...', 'itemClass': 'edit', 'events': {'click': function(event) {
             if(!$currentRemotefile) {
                 alert('Remote file must be chosen!!');
                 return;
             }
 
             var div = $currentRemotefile.children('div'), filepath = $currentRemotefile.data('path'),
-                parentpath = filepath.substring(0, filepath.lastIndexOf('/'));
+                parentpath = filepath.substring(0, filepath.lastIndexOf('/')),
+                target = event.currentTarget;
 
             // first, set field editable
             div.attr({'contenteditable': 'true'});
 
-            div.bind('blur paste copy cut', function(event) {
+            div.bind('blur paste copy cut', function() {
                 var newfile = parentpath + '/' + div.text();
                 controller.rename(filepath, newfile, function() {
-                    alert('Rename file is OK!');
                     var prev = $(target).prev().prev().prev();
                     prev.trigger('click');   // refresh the folder
                 });
@@ -510,7 +509,6 @@ $(function() {
                 controller.delete(filepath);
 
                 refresh.trigger('click');
-                alert('Delete file success!!');
             }
         }}}
     ];
