@@ -260,39 +260,41 @@ $(function() {
 
     var localbinddata = [
         {'itemName': 'Upload...', 'itemClass': 'upload',
-          'events': {'click': function() {
+          'events': {'click': function(event) {
                if(!$currentLocalfile) {
                    windowPanel.setContent('One of local file must be selected!!');
                    windowPanel.alert();
                    return false;
                }
 
+               var remotepath = ($currentRemotefile) ? $currentRemotefile.data('path') : '';
                if(!$currentRemotefile) {
                    windowPanel.setContent('One of remote diredtory must be selected!!');
                    windowPanel.alert();
-                   return false;
+                   // user do not choose any folder, use current folder
+                   if(currentRemoteFolder === '/') {
+                       windowPanel.alert('Sorry, the system root should not upload!!');
+                       return false;
+                   }
+
+                   // change remotepath
+                   remotepath = currentRemoteFolder;
                }
 
-               controller.copyFile($currentLocalfile.data('path'), $currentRemotefile.data('path'));
+               controller.copyFile($currentLocalfile.data('path'), remotepath);
           }}
         },
         {'itemName': 'Refresh...', 'itemClass': 'refresh', 'events': {'click': function() {
-               var srcfile = $('.local .localfile > li:first').data('path'),
-                   srcpath = srcfile.substring(0, srcfile.lastIndexOf('/'));
-
-               if(!srcpath) srcpath = '/';
-               controller.setPath(srcpath);
+               controller.setPath(currentLocalFolder);
                // refresh
                showSubFolder(controller, 'localfile');
           }}
         },
         {'itemName': 'Create Folder...', 'itemClass': 'newfold', 'events': {'click': function(event) {
-               var srcfile = $('.local .localfile > li:first').data('path'),
-                   srcpath = srcfile.substring(0, srcfile.lastIndexOf('/')),
-                   $currentlist = $('.local .localfile'), dstfolder = srcpath + '/' + 'newFolder',
+               var $currentlist = $('.local .localfile'), dstfolder = currentLocalFolder + '/' + 'newFolder',
                    target = event.currentTarget;
 
-               if(!srcpath) {
+               if(currentLocalFolder === '/') {
                    windowPanel.setContent('The system drive can not be new folder!!');
                    windowPanel.alert();
                    return false;
@@ -312,7 +314,7 @@ $(function() {
                    $(div).attr({'title': 'newFolder', 'contenteditable': 'true'});
                    $(div).text('newFolder');
                    $(div).bind('blur paste copy cut', function(event) {
-                        var newfile = srcpath + '/' + $(div).text();
+                        var newfile = currentLocalFolder + '/' + $(div).text();
                         controller.rename(dstfolder, newfile, function() {
                             var prev = $(target).prev();
                             prev.trigger('click');   // refresh the folder
@@ -327,12 +329,10 @@ $(function() {
           }}
         },
         {'itemName': 'Create file...', 'itemClass': 'newfile', 'events': {'click': function() {
-                var srcfile = $('.local .localfile > li:first').data('path'),
-                    srcpath = srcfile.substring(0, srcfile.lastIndexOf('/')),
-                    $currentlist = $('.local .localfile'), dstfile = srcpath + '/' + 'newFile',
+                var $currentlist = $('.local .localfile'), dstfile = currentLocalFolder + '/' + 'newFile',
                     target = event.currentTarget;
 
-                if(!srcpath) {
+                if(currentLocalFolder === '/') {
                     windowPanel.setContent('The system drive can not be new folder!!');
                     windowPanel.alert();
                     return false;
@@ -356,7 +356,7 @@ $(function() {
                         $(div).attr({'title': 'newFile', 'contenteditable': 'true'});
                         $(div).text('newFile');
                         $(div).bind('blur paste copy cut', function(event) {
-                            var newfile = srcpath + '/' + $(div).text();
+                            var newfile = currentLocalFolder + '/' + $(div).text();
                             controller.rename(dstfile, newfile, function() {
                                 var prev = $(target).prev().prev();
                                 prev.trigger('click');   // refresh the folder
@@ -371,7 +371,7 @@ $(function() {
                 });
           }}
         },
-        {'itemName': 'Rename...', 'itemClass': 'edit', 'events': {'click': function() {
+        {'itemName': 'Rename...', 'itemClass': 'edit', 'events': {'click': function(event) {
                 if(!$currentLocalfile) {
                     windowPanel.setContent('Local file must be chosen!!');
                     windowPanel.alert();
@@ -379,16 +379,15 @@ $(function() {
                 }
 
                 var div = $currentLocalfile.children('div'), filepath = $currentLocalfile.data('path'),
-                    parentpath = filepath.substring(0, filepath.lastIndexOf('/'));
+                    parentpath = filepath.substring(0, filepath.lastIndexOf('/')),
+                    target = event.currentTarget;
 
                 // first, set field editable
                 div.attr({'contenteditable': 'true'});
 
-                div.bind('blur paste copy cut', function(event) {
+                div.bind('blur paste copy cut', function() {
                     var newfile = parentpath + '/' + div.text();
                     controller.rename(filepath, newfile, function() {
-                        windowPanel.setContent('Rename file is OK!');
-                        windowPanel.alert();
                         var prev = $(target).prev().prev().prev();
                         prev.trigger('click');   // refresh the folder
                     });
@@ -406,8 +405,6 @@ $(function() {
             var eventData = {'click': function() {
                 controller.delete(filepath);
                 refresh.trigger('click');
-                windowPanel.setContent('Delete file success!!');
-                windowPanel.alert();
             }};
             windowPanel.setTitle('confirm');
             windowPanel.setContent('Are you sure to remove ' + filepath);
@@ -415,21 +412,15 @@ $(function() {
         }}}
     ], remotebinddate = [
         {'itemName': 'Refresh...', 'itemClass': 'refresh', 'events': {'click': function() {
-            var srcfile = $('.remote .remotefile > li:first').data('path'),
-                srcpath = srcfile.substring(0, srcfile.lastIndexOf('/'));
-
-            if(!srcpath) srcpath = '/';
-            controller.setPath(srcpath);
+            controller.setPath(currentRemoteFolder);
             // refresh
             showSubFolder(controller, 'remotefile');
         }}},
         {'itemName': 'Create Folder...', 'itemClass': 'newfold', 'events': {'click': function(event) {
-            var srcfile = $('.remote .remotefile > li:first').data('path'),
-                srcpath = srcfile.substring(0, srcfile.lastIndexOf('/')),
-                $currentlist = $('.remote .remotefile'), dstfolder = srcpath + '/' + 'newFolder',
+            var $currentlist = $('.remote .remotefile'), dstfolder = currentRemoteFolder + '/' + 'newFolder',
                 target = event.currentTarget;
 
-            if(!srcpath) {
+            if(currentRemoteFolder === '/') {
                 windowPanel.setContent('The system drive can not be new folder!!');
                 windowPanel.alert();
                 return false;
@@ -449,7 +440,7 @@ $(function() {
                 $(div).attr({'title': 'newFolder', 'contenteditable': 'true'});
                 $(div).text('newFolder');
                 $(div).bind('blur paste copy cut', function(event) {
-                    var newfile = srcpath + '/' + $(div).text();
+                    var newfile = currentRemoteFolder + '/' + $(div).text();
                     controller.rename(dstfolder, newfile, function() {
                         var prev = $(target).prev();
                         prev.trigger('click');   // refresh the folder
@@ -463,12 +454,10 @@ $(function() {
             });
         }}},
         {'itemName': 'Create file...', 'itemClass': 'newfile', 'events': {'click': function() {
-            var srcfile = $('.remote .remotefile > li:first').data('path'),
-                srcpath = srcfile.substring(0, srcfile.lastIndexOf('/')),
-                $currentlist = $('.remote .remotefile'), dstfile = srcpath + '/' + 'newFile',
+            var $currentlist = $('.remote .remotefile'), dstfile = currentRemoteFolder + '/' + 'newFile',
                 target = event.currentTarget;
 
-            if(!srcpath) {
+            if(currentRemoteFolder === '/') {
                 windowPanel.setContent('The system drive can not be new folder!!');
                 windowPanel.alert();
                 return false;
@@ -492,7 +481,7 @@ $(function() {
                     $(div).attr({'title': 'newFile', 'contenteditable': 'true'});
                     $(div).text('newFile');
                     $(div).bind('blur paste copy cut', function(event) {
-                        var newfile = srcpath + '/' + $(div).text();
+                        var newfile = currentRemoteFolder + '/' + $(div).text();
                         controller.rename(dstfile, newfile, function() {
                             var prev = $(target).prev().prev();
                             prev.trigger('click');   // refresh the folder
@@ -506,7 +495,7 @@ $(function() {
                 });
             });
         }}},
-        {'itemName': 'Rename...', 'itemClass': 'edit', 'events': {'click': function() {
+        {'itemName': 'Rename...', 'itemClass': 'edit', 'events': {'click': function(event) {
             if(!$currentRemotefile) {
                 windowPanel.setContent('Remote file must be chosen!!');
                 windowPanel.alert();
@@ -514,16 +503,15 @@ $(function() {
             }
 
             var div = $currentRemotefile.children('div'), filepath = $currentRemotefile.data('path'),
-                parentpath = filepath.substring(0, filepath.lastIndexOf('/'));
+                parentpath = filepath.substring(0, filepath.lastIndexOf('/')),
+                target = event.currentTarget;
 
             // first, set field editable
             div.attr({'contenteditable': 'true'});
 
-            div.bind('blur paste copy cut', function(event) {
+            div.bind('blur paste copy cut', function() {
                 var newfile = parentpath + '/' + div.text();
                 controller.rename(filepath, newfile, function() {
-                    windowPanel.setContent('Rename file is OK!');
-                    windowPanel.alert();
                     var prev = $(target).prev().prev().prev();
                     prev.trigger('click');   // refresh the folder
                 });
@@ -540,8 +528,6 @@ $(function() {
             var eventData = {'click': function() {
                 controller.delete(filepath);
                 refresh.trigger('click');
-                windowPanel.setContent('Delete file success!!');
-                windowPanel.alert();
             }};
             windowPanel.setTitle('confirm');
             windowPanel.setContent('Are you sure to remove ' + filepath);

@@ -2,6 +2,7 @@
  * @author Jackie lin
  * @date 2014-04-09
  * @content add grunt to build automation
+ * change to JackieLin
  * npm install --dev --save-dev        development env
  * npm install --production --save-dev production env
  * To test travis cli

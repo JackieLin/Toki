@@ -44,24 +44,32 @@ Controller.prototype.copy = function(src, dst) {
         return;
     }
 
+    var path = src.substring(src.lastIndexOf('/') + 1, src.length), dstpath = dst + '/' + path;
     // src is a file, just copy it
     if(srcAttr === 'file') {
-        var path = src.substring(src.lastIndexOf('/') + 1, src.length), dstpath = dst + '/' + path;
         this.fileOperation.copyFile(src, dstpath);
-
     }
     // src is a directory, recursion all the file
     else if(srcAttr === 'directory') {
         var that = this;
-        this.fileOperation.openDirPath(src, function(files) {
-            files.forEach(function(item) {
-                var srcpath = src + '/' + item, dstpath = dst + '/' + item, srcAttr = that.fileOperation.fileAttr(srcpath);
+        // create folder in the target folder
+        this.fileOperation.mkdir(dstpath, function(err) {
+            if(err) {
+                alert('controller:mkdir:: create folder:' + err);
+                return;
+            }
 
-                if(srcAttr === 'file') {
-                    that.fileOperation.copyFile(srcpath, dstpath);
-                } else if (srcAttr === 'directory') {
-                    that.copyFile(srcpath, dstpath);
-                }
+            // recursion copy file
+            that.fileOperation.openDirPath(src, function(files) {
+                files.forEach(function(item) {
+                    var srcpath = src + '/' + item, tdstpath = dstpath + '/' + item, srcAttr = that.fileOperation.fileAttr(srcpath);
+
+                    if(srcAttr === 'file') {
+                        that.fileOperation.copyFile(srcpath, tdstpath);
+                    } else if (srcAttr === 'directory') {
+                        that.copy(srcpath, dstpath);
+                    }
+                });
             });
         });
     }
