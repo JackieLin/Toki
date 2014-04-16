@@ -182,11 +182,22 @@ a > span {
     display: none;
 }
 
+.alertpanel, .confirmpanel{
+    width: 300px;
+    height: 150px;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    z-index: 999;
+    border: 2px #000 solid;
+    background-color: rgba(40,40,40,0.7);
+}
+
 .commitupdates {
     height: 200px;
 }
 
-.confpanel > header, .commitupdates > header {
+.confpanel > header, .commitupdates > header, .alertpanel > header, .confirmpanel > header{
     width: 96%;
     height: 20%;
     padding-top: 1%;
@@ -194,6 +205,24 @@ a > span {
     color: #ffffff;
     font-style: italic;
     background: -webkit-linear-gradient(top,rgba(90,90,90,0.8),rgba(0,0,0,0.8));
+}
+
+.alertpanel > header, .confirmpanel > header{
+    line-height: 200%;
+    width: 96%;
+    height: 20%;
+    padding-top: 1%;
+    padding-left: 4%;
+    color: #ffffff;
+    font-style: italic;
+    background: -webkit-linear-gradient(top,rgba(90,90,90,0.8),rgba(0,0,0,0.8));
+}
+
+.alertpanel .panelcontent, .confirmpanel .panelcontent {
+    height: 30px;
+    padding-top: 20px;
+    padding-left: 30px;
+    color: white;
 }
 
 .commitupdates > header {
@@ -217,10 +246,16 @@ a > span {
     left: 120px;
 }
 
-.sure, .cancel, .surecommit, .cancelcommit {
+.sure, .cancel, .surecommit, .cancelcommit , .ok, .confirmsure, .confirmcancel{
     width: 50%;
     margin-top: 10px;
     float: left;
+}
+
+.ok{
+    width: 50%;
+    margin-top: 10px;
+    float: right;
 }
 
 .sure > div, .cancel > div, .surecommit > div, .cancelcommit > div{
@@ -231,6 +266,17 @@ a > span {
     text-align: center;
     margin: 0 auto;
     line-height: 200%;
+    cursor: pointer;
+}
+
+.ok > div, .confirmsure > div, .confirmcancel > div{
+    width: 70px;
+    height: 30px;
+    background-color: rgba(114,172,52,.8);
+    color: #ffffff;
+    text-align: center;
+    margin: 0 auto;
+    line-height: 250%;
     cursor: pointer;
 }
 

@@ -10,21 +10,25 @@ $(function() {
 
     // get current window
     var gui = require('nw.gui'), currWindow = gui.Window.get();
+    var windowPanel = new WindowPanel();
     // show window
     currWindow.show();
     // pretend to be closed already
     currWindow.on('close', function() {
-        if(window.confirm('Are you sure to close?')) {
+        var that = this;
+        var eventData = {'click': function() {
             try {
-                // don't forget to close connection
                 remoteController.scpClose(function() {
-                    this.close(true);
+                    that.close(true);
                 });
             } catch (e) {
                 console.log('error:' + e);
-                this.close(true);
+                that.close(true);
             }
-        }
+        }};
+        windowPanel.setTitle('confirm');
+        windowPanel.setContent('Are you sure to close?');
+        windowPanel.confirm(eventData);
     });
 
     $('.close').click(function() {
@@ -126,7 +130,7 @@ $(function() {
     var controller = new Controller('/');
 
     showSubFolder(controller, 'localfile', true);
-/*    showSubFolder(controller, 'remotefile');*/
+    /*showSubFolder(controller, 'remotefile');*/
 
     // register local and remote enter event
     $('.ipath').bind('keyup', function(event) {
@@ -258,12 +262,14 @@ $(function() {
         {'itemName': 'Upload...', 'itemClass': 'upload',
           'events': {'click': function() {
                if(!$currentLocalfile) {
-                   alert('One of local file must be selected!!');
+                   windowPanel.setContent('One of local file must be selected!!');
+                   windowPanel.alert();
                    return false;
                }
 
                if(!$currentRemotefile) {
-                   alert('One of remote diredtory must be selected!!');
+                   windowPanel.setContent('One of remote diredtory must be selected!!');
+                   windowPanel.alert();
                    return false;
                }
 
@@ -287,13 +293,15 @@ $(function() {
                    target = event.currentTarget;
 
                if(!srcpath) {
-                   alert('The system drive can not be new folder!!');
+                   windowPanel.setContent('The system drive can not be new folder!!');
+                   windowPanel.alert();
                    return false;
                }
 
                controller.mkdir(dstfolder, function(err) {
                    if(err) {
-                       alert('Create folder failed!!');
+                       windowPanel.setContent('Create folder failed!!');
+                       windowPanel.alert();
                        return;
                    }
                    var li = document.createElement('li'), img = document.createElement('img'), div = document.createElement('div');
@@ -325,14 +333,16 @@ $(function() {
                     target = event.currentTarget;
 
                 if(!srcpath) {
-                    alert('The system drive can not be new folder!!');
+                    windowPanel.setContent('The system drive can not be new folder!!');
+                    windowPanel.alert();
                     return false;
                 }
 
                 // new file and add to the folder
                 controller.newFileIgnoreExists(dstfile, function(err, fd) {
                     if(err) {
-                        alert('Sorry, new file failure');
+                        windowPanel.setContent('Sorry, new file failure');
+                        windowPanel.alert();
                         return;
                     }
 
@@ -363,7 +373,8 @@ $(function() {
         },
         {'itemName': 'Rename...', 'itemClass': 'edit', 'events': {'click': function() {
                 if(!$currentLocalfile) {
-                    alert('Local file must be chosen!!');
+                    windowPanel.setContent('Local file must be chosen!!');
+                    windowPanel.alert();
                     return;
                 }
 
@@ -376,7 +387,8 @@ $(function() {
                 div.bind('blur paste copy cut', function(event) {
                     var newfile = parentpath + '/' + div.text();
                     controller.rename(filepath, newfile, function() {
-                        alert('Rename file is OK!');
+                        windowPanel.setContent('Rename file is OK!');
+                        windowPanel.alert();
                         var prev = $(target).prev().prev().prev();
                         prev.trigger('click');   // refresh the folder
                     });
@@ -385,17 +397,21 @@ $(function() {
         },
         {'itemName': 'Delete...', 'itemClass': 'trash', 'events': {'click': function(event) {
             if(!$currentLocalfile) {
-                alert('It must be chosen one file to delete!!');
+                windowPanel.setContent('It must be chosen one file to delete!!');
+                windowPanel.alert();
                 return false;
             }
 
             var target = event.currentTarget, filepath = $currentLocalfile.data('path'), refresh = $(target).siblings('.refresh');
-            if(window.confirm('Are you sure to remove ' + filepath)) {
+            var eventData = {'click': function() {
                 controller.delete(filepath);
-
                 refresh.trigger('click');
-                alert('Delete file success!!');
-            }
+                windowPanel.setContent('Delete file success!!');
+                windowPanel.alert();
+            }};
+            windowPanel.setTitle('confirm');
+            windowPanel.setContent('Are you sure to remove ' + filepath);
+            windowPanel.confirm(eventData);
         }}}
     ], remotebinddate = [
         {'itemName': 'Refresh...', 'itemClass': 'refresh', 'events': {'click': function() {
@@ -414,13 +430,15 @@ $(function() {
                 target = event.currentTarget;
 
             if(!srcpath) {
-                alert('The system drive can not be new folder!!');
+                windowPanel.setContent('The system drive can not be new folder!!');
+                windowPanel.alert();
                 return false;
             }
 
             controller.mkdir(dstfolder, function(err) {
                 if(err) {
-                    alert('Create folder failed!!');
+                    windowPanel.setContent('Create folder failed!!');
+                    windowPanel.alert();
                     return;
                 }
                 var li = document.createElement('li'), img = document.createElement('img'), div = document.createElement('div');
@@ -451,14 +469,16 @@ $(function() {
                 target = event.currentTarget;
 
             if(!srcpath) {
-                alert('The system drive can not be new folder!!');
+                windowPanel.setContent('The system drive can not be new folder!!');
+                windowPanel.alert();
                 return false;
             }
 
             // new file and add to the folder
             controller.newFileIgnoreExists(dstfile, function(err, fd) {
                 if(err) {
-                    alert('Sorry, new file failure');
+                    windowPanel.setContent('Sorry, new file failure');
+                    windowPanel.alert();
                     return;
                 }
 
@@ -488,7 +508,8 @@ $(function() {
         }}},
         {'itemName': 'Rename...', 'itemClass': 'edit', 'events': {'click': function() {
             if(!$currentRemotefile) {
-                alert('Remote file must be chosen!!');
+                windowPanel.setContent('Remote file must be chosen!!');
+                windowPanel.alert();
                 return;
             }
 
@@ -501,7 +522,8 @@ $(function() {
             div.bind('blur paste copy cut', function(event) {
                 var newfile = parentpath + '/' + div.text();
                 controller.rename(filepath, newfile, function() {
-                    alert('Rename file is OK!');
+                    windowPanel.setContent('Rename file is OK!');
+                    windowPanel.alert();
                     var prev = $(target).prev().prev().prev();
                     prev.trigger('click');   // refresh the folder
                 });
@@ -509,17 +531,21 @@ $(function() {
         }}},
         {'itemName': 'Delete...', 'itemClass': 'trash', 'events': {'click': function() {
             if(!$currentRemotefile) {
-                alert('It must be chosen one file to delete!!');
+                windowPanel.setContent('It must be chosen one file to delete!!');
+                windowPanel.alert();
                 return false;
             }
 
             var target = event.currentTarget, filepath = $currentRemotefile.data('path'), refresh = $(target).siblings('.refresh');
-            if(window.confirm('Are you sure to remove ' + filepath)) {
+            var eventData = {'click': function() {
                 controller.delete(filepath);
-
                 refresh.trigger('click');
-                alert('Delete file success!!');
-            }
+                windowPanel.setContent('Delete file success!!');
+                windowPanel.alert();
+            }};
+            windowPanel.setTitle('confirm');
+            windowPanel.setContent('Are you sure to remove ' + filepath);
+            windowPanel.confirm(eventData);
         }}}
     ];
     // register contextmenu event
@@ -549,12 +575,14 @@ $(function() {
 
         // parent path is not exists, means that now it is root
         if(!parentpath) {
-            alert('Sorry, remote file path must not be root path');
+            windowPanel.setContent('Sorry, remote file path must not be root path');
+            windowPanel.alert();
             return false;
         }
 
         if(!sourcepath || !remotepath) {
-            alert('Source path and Remote path must be exists!!');
+            windowPanel.setContent('Source path and Remote path must be exists!!');
+            windowPanel.alert();
             return false;
         }
         if(!$currentRemotefile) {
@@ -577,7 +605,8 @@ $(function() {
 
         var geneConf = function() {
             controller.geneConfiguration(sourcepath, remotepath, projectconffile, filepath, parentpath, function() {
-                alert('Generation Configuration success!!');
+                windowPanel.setContent('Generation Configuration success!!');
+                windowPanel.alert();
                 // set display none
                 $('.confpanel').css('display', 'none');
             });
@@ -623,11 +652,13 @@ $(function() {
             host = $('.host').val(), port = $('.port').val(), username = $('.username').val(), password = $('.password').val();
 
         if(!$sourcepath) {
-            alert('Source path must be exists!!');
+            windowPanel.setContent('Source path must be exists!!');
+            windowPanel.alert();
             return false;
         }
         if(!$currentRemotefile) {
-            alert('Remote file to send should be chosen!!');
+            windowPanel.setContent('Remote file to send should be chosen!!');
+            windowPanel.alert();
             return false;
         }
 
@@ -655,18 +686,21 @@ $(function() {
         if(fileAttr === 'directory') {
             remoteController.remoteMkdir(hostpath, function(err) {
                 if(err) {
-                    alert('file mkdir failed, you can restart program to continue!!');
+                    windowPanel.setContent('file mkdir failed, you can restart program to continue!!');
+                    windowPanel.alert();
                     return;
                 }
 
                 remoteController.scp(filepath, hostpath, function(err) {
                     if(err) {
-                        alert('file scp failed::' + err);
+                        windowPanel.setContent('file scp failed::' + err);
+                        windowPanel.alert();
                         return;
                     }
                     remoteController.scp(projectconfpath, hostpath, function(err) {
                         if(err) {
-                            alert('scp file error!!');
+                            windowPanel.setContent('scp file error!!');
+                            windowPanel.alert();
                             return;
                         }
                         execSSH();
@@ -695,13 +729,15 @@ $(function() {
 
             remoteController.scp(filepath, $sourcepath, function(err) {
                 if(err) {
-                    alert('scp file error::' + err);
+                    windowPanel.setContent('scp file error::' + err);
+                    windowPanel.alert();
                     return;
                 }
 
                 remoteController.scp(projectconfpath, $sourcepath, function(err) {
                     if(err) {
-                        alert('scp file error::' + err);
+                        windowPanel.setContent('scp file error::' + err);
+                        windowPanel.alert();
                         return;
                     }
                     execSSH();
@@ -722,7 +758,8 @@ $(function() {
 
                         remoteController.executeCommand(shell, function(err, stream) {
                             if(err) {
-                                alert('executeCommand:: bash shell failed:' + err);
+                                windowPanel.setContent('executeCommand:: bash shell failed:' + err);
+                                windowPanel.alert();
                                 return;
                             }
                             var result = '', tmp;
@@ -738,7 +775,8 @@ $(function() {
                             });
                             stream.on('exit', function(code, signal) {
                                 console.log('Stream :: exit :: code: ' + code + ', signal: ' + signal);
-                                alert(result);
+                                windowPanel.setContent(result);
+                                windowPanel.alert();
                                 console.log(result);
                                 remoteController.sshEnd();
                             });
