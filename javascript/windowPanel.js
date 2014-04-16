@@ -5,17 +5,17 @@
  */
 var WindowPanel = (function(window, undefined) {
     var WindowPanel = function() {
-        var arguments = arguments, length = arguments.length;
+        var arg = arguments, length = arguments.length;
         if(length === 0) {
             this._title = '';
             this._content = undefined;
         } else if(length === 1) {
             this._title = '';
-            this._content = arguments[0];
+            this._content = arg[0];
         }
         else if(length === 2) {
-            this._title = arguments[0];
-            this._content = arguments[1];
+            this._title = arg[0];
+            this._content = arg[1];
         }
     };
 
@@ -24,26 +24,28 @@ var WindowPanel = (function(window, undefined) {
      * @param events
      */
     WindowPanel.prototype.alert = function(events) {
-        var div = document.createElement('div');
-        div.id = 'alertPanel';
-        div.className = 'alertpanel';
-        var header = document.createElement('header');
-        header.innerText = '';
-        var ul = document.createElement('ul');
-        var contentLi = document.createElement('div');
-        contentLi.className = 'panelcontent';
-        contentLi.innerText = this._content;
-        var cancelLi = document.createElement('li');
-        cancelLi.className = 'ok';
-        cancelLi.innerHTML = '<div>Ok</div>';
-        cancelLi.addEventListener('click', function () {
-            this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
-        });
-        ul.appendChild(cancelLi);
-        div.appendChild(header);
-        div.appendChild(contentLi);
-        div.appendChild(ul);
-        document.body.appendChild(div);
+        if(null === document.getElementById('alertPanel')) {
+            var div = document.createElement('div');
+            div.id = 'alertPanel';
+            div.className = 'alertpanel';
+            var header = document.createElement('header');
+            header.innerText = '';
+            var ul = document.createElement('ul');
+            var contentLi = document.createElement('div');
+            contentLi.className = 'panelcontent';
+            contentLi.innerText = this._content;
+            var cancelLi = document.createElement('li');
+            cancelLi.className = 'ok';
+            cancelLi.innerHTML = '<div>Ok</div>';
+            cancelLi.addEventListener('click', function () {
+                this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+            });
+            ul.appendChild(cancelLi);
+            div.appendChild(header);
+            div.appendChild(contentLi);
+            div.appendChild(ul);
+            document.body.appendChild(div);
+        }
     };
 
     /**
@@ -51,7 +53,7 @@ var WindowPanel = (function(window, undefined) {
      * @param events
      */
     WindowPanel.prototype.confirm = function(events) {
-        if(null == document.getElementById('confirmPanel')) {
+        if(null === document.getElementById('confirmPanel')) {
             var div = document.createElement('div');
             div.id = 'confirmPanel';
             div.className = 'confirmpanel';
@@ -90,7 +92,7 @@ var WindowPanel = (function(window, undefined) {
      * @param title
      */
     WindowPanel.prototype.setTitle = function(title){
-        if(undefined == title){
+        if(undefined === title){
             console.error('title is undefined !');
         }else{
             this._title = title;
@@ -102,7 +104,7 @@ var WindowPanel = (function(window, undefined) {
      * @param content
      */
     WindowPanel.prototype.setContent = function(content){
-        if(undefined == content){
+        if(undefined === content){
             console.error('content is undefined !');
         }else{
             this._content = content;
