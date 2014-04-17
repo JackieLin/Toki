@@ -1,0 +1,11 @@
+v0.1.0
+basic version, has been commited and exectued
+
+v0.1.1
+
+fix: windows xp can show folder letter;   			# fix @Jackie Lin
+fix: ssh bugs, if it have;							# fix @Jackie Lin
+fix: menubar upload bug                             # fix @Jackie Lin
+add: local and remote file context menu function;	# fix @megmei
+add: rewrite window alter and confirm panel;		# not fix @megmei
+add: auto test in development;						# fix @Jackie Lin

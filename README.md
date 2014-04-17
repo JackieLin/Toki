@@ -21,9 +21,11 @@ Features
 
 DownLoad
 ===
-Prebuilt binaries(v0.1.0 release - Apr 4, 2014):
+Prebuilt binaries(v0.1.1 release - Apr 17, 2014):
+Windows: [win32](http://toki.qiniudn.com/Toki_v0.1.1.exe)
 
-Windows: [win32][]
+Prebuilt binaries(v0.1.0 release - Apr 4, 2014):
+Windows: [win32](http://toki.qiniudn.com/Toki_v0.1.0.exe)
 
 Screenshot
 ===
@@ -57,4 +59,3 @@ License
 [node-webkit]: https://github.com/rogerwang/node-webkit
 [http://www.baike.com/wiki/%E5%A2%9E%E9%87%8F%E6%9B%B4%E6%96%B0]: http://www.baike.com/wiki/%E5%A2%9E%E9%87%8F%E6%9B%B4%E6%96%B0
 [http://en.wikipedia.org/wiki/Incremental_backup]: http://en.wikipedia.org/wiki/Incremental_backup
-[win32]: http://toki.qiniudn.com/Toki_v0.1.0.exe

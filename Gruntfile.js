@@ -108,6 +108,6 @@ module.exports = function(grunt) {
 
     // register default task
     grunt.registerTask('test', ['jshint', 'htmlhint']);
-    grunt.registerTask('build', [['cssmin', 'jshint', 'uglify', 'htmlhint', 'copy']]);
+    grunt.registerTask('build', ['cssmin', 'jshint', 'uglify', 'htmlhint', 'copy']);
     grunt.registerTask('default', ['jshint', 'htmlhint']);
 };
