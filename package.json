@@ -20,6 +20,11 @@
         "url" : "https://github.com/JackieLin/Toki"
     },
 
+    "contributions": {
+        "Jackie Lin": "dashi_lin@163.com",
+        "megmei": "yjb886@163.com"
+    },
+
     "os": ["win32"],
 
     "scripts": {
