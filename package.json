@@ -2,7 +2,7 @@
 	"main": "main.html",
 	"name": "Toki",
 	"description": "Toki - an Incremental update tools",
-    "version": "v0.1.0",
+    "version": "v0.1.1",
 	"keywords": ["Toki", "app", "increamental updates"],
 	"window": {
 		"icon": "images/favicon.png",
