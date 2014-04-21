@@ -239,3 +239,38 @@ Controller.prototype.closeFile = function(fd, callback) {
 
     this.fileOperation.closeFile(fd, callback);
 };
+
+/**
+ * file copy progress, default 1s
+ * @param srcfile
+ * @param dstfile
+ * @param time
+ * @param callback
+ */
+Controller.prototype.fileprogress = function(srcfile, dstfile, callback, time) {
+    if(!srcfile && !dstfile && !callback) {
+        console.warn('filepath and time and callbakck must be exists!!');
+        return;
+    }
+
+    // speed, current file copy rate
+    var speed = 0;
+    console.log('正在计算......');
+    var srcfileSize = this.fileOperation.filesize(srcfile, function(result) {
+        console.log('hello' + result);
+    });
+
+    console.log(srcfileSize);
+    // callback
+    /*var cb = function() {
+        callback(speed);
+        window.setTimeout(cb, time || 1000)
+    };
+
+    window.setTimeout(cb, time || 1000);*/
+};
+
+/**
+ * test
+ */
+new Controller('/').fileprogress('D:/TokiSoftware/toki', '/', function(){});

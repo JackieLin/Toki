@@ -22,9 +22,11 @@ Features
 DownLoad
 ===
 Prebuilt binaries(v0.1.1 release - Apr 17, 2014):
+
 Windows: [win32](http://toki.qiniudn.com/Toki_v0.1.1.exe)
 
 Prebuilt binaries(v0.1.0 release - Apr 4, 2014):
+
 Windows: [win32](http://toki.qiniudn.com/Toki_v0.1.0.exe)
 
 Screenshot
