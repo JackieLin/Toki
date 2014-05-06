@@ -37,7 +37,7 @@ Controller.prototype.copy = function(src, dst, progress, time, callback) {
         return;
     }
 
-    var dstAttr = this.fileOperation.fileAttr(dst), srcAttr = this.fileOperation.fileAttr(src), pflag = !!progress;
+    var dstAttr = this.fileOperation.fileAttr(dst), srcAttr = this.fileOperation.fileAttr(src), progress = !!progress;
 
     if(dstAttr !== 'directory') {
         console.warn('destination path must be directory!!');
@@ -47,7 +47,7 @@ Controller.prototype.copy = function(src, dst, progress, time, callback) {
     var path = src.substring(src.lastIndexOf('/') + 1, src.length), dstpath = dst + '/' + path;
     // src is a file, just copy it
     if(srcAttr === 'file') {
-        if(pflag) {
+        if(progress) {
             this.fileOperation.copyFile(src, dstpath, time, callback);
         } else {
             this.fileOperation.copyFile(src, dstpath);
@@ -59,23 +59,22 @@ Controller.prototype.copy = function(src, dst, progress, time, callback) {
         // create folder in the target folder
         this.fileOperation.mkdir(dstpath, function(err) {
             if(err) {
-                alert('controller:mkdir:: create folder:' + err);
+                console.log('controller:mkdir:: create folder:' + err);
                 return;
             }
-
             // recursion copy file
             that.fileOperation.openDirPath(src, function(files) {
                 files.forEach(function(item) {
                     var srcpath = src + '/' + item, tdstpath = dstpath + '/' + item, srcAttr = that.fileOperation.fileAttr(srcpath);
 
                     if(srcAttr === 'file') {
-                        if(pflag) {
+                        if(progress) {
                             that.fileOperation.copyFile(srcpath, tdstpath, time, callback);
                         } else {
                             that.fileOperation.copyFile(srcpath, tdstpath);
                         }
                     } else if (srcAttr === 'directory') {
-                        that.copy(srcpath, dstpath);
+                        that.copy(srcpath, dstpath, progress, time, callback);
                     }
                 });
             });
@@ -264,22 +263,15 @@ Controller.prototype.fileprogress = function(srcfile, dstfile, warp, callback, t
 
     // speed, current file copy rate
     var speed = 0;
+    var that = this;
     console.log('正在计算......');
     var srcfileSize = this.fileOperation.filesize(srcfile, function(result) {
         var filesize = parseInt(result.split('\r\n')[0]);
-        var currentFileSize = 0;
-        var currentDst;
-
         // if file size larger than 10M, show progress bar
         if(filesize > 10000) {
-            warp(srcfile, dstfile, progress, time, callback);
-            // callback
-            var cb = function() {
-                callback(speed);
-                window.setTimeout(cb, time || 100);
-            };
-
-            window.setTimeout(cb, time || 100);
+            warp.apply(that, [srcfile, dstfile, true, time, callback]);
+        } else {
+            warp.apply(that, [srcfile, dstfile, true, time, callback]);
         }
     });
 };
@@ -287,5 +279,8 @@ Controller.prototype.fileprogress = function(srcfile, dstfile, warp, callback, t
 /**
  * test
  */
+var controller = new Controller('/');
 //new Controller('/').fileprogress('D:/TokiSoftware/toki', '/', function(){});
-new Controller('/').copyFile('D:/迅雷下载/[www.66e.cc]美国d长2.TS中字.rmvb', 'D:/test',true, 100, function() {});
+controller.fileprogress('E:/360Downloads', 'D:/test',controller.copyFile, function(fileLength) {
+    console.log(fileLength);
+}, 100);
