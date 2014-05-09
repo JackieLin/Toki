@@ -88,6 +88,47 @@ var WindowPanel = (function(window, undefined) {
     };
 
     /**
+     * show progress bar
+     * return hock
+     */
+    WindowPanel.prototype.progressBar = function() {
+        var that = this;
+        if(null === document.getElementById('progresspanel')) {
+            var div = document.createElement('div');
+            div.id = 'progresspanel';
+            div.className = 'progresspanel';
+            var header = document.createElement('header');
+            header.innerText = this._title;
+            var ul = document.createElement('ul');
+            ul.className = 'progress';
+            var contentLi = document.createElement('li');
+            contentLi.className = 'panelcontent';
+            contentLi.innerText = this._content;
+            var bar = document.createElement('li');
+            bar.className = 'bar';
+            var progressDiv = document.createElement('div');
+            progressDiv.style.width = '0';
+
+            bar.appendChild(progressDiv);
+            ul.appendChild(contentLi);
+            ul.appendChild(bar);
+            div.appendChild(header);
+            div.appendChild(ul);
+            document.body.appendChild(div);
+        }
+
+        return function(rate) {
+            contentLi.innerText = that._content;
+            progressDiv.style.width = rate + '%';
+
+            // remove itself
+            if(rate === 100) {
+                div.parentNode.removeChild(div);
+            }
+        };
+    };
+
+    /**
      * setTitle function
      * @param title
      */

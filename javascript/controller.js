@@ -31,13 +31,13 @@ Controller.prototype.setPath = function(path) {
  * @param dst
  * @param callback
  */
-Controller.prototype.copy = function(src, dst, progress, time, callback) {
+Controller.prototype.copy = function(src, dst, progress, callback) {
     if(!src && !dst && !callback) {
         console.warn('copy: src and dst and callback must be exists');
         return;
     }
 
-    var dstAttr = this.fileOperation.fileAttr(dst), srcAttr = this.fileOperation.fileAttr(src), progress = !!progress;
+    var dstAttr = this.fileOperation.fileAttr(dst), srcAttr = this.fileOperation.fileAttr(src), flag = !!progress;
 
     if(dstAttr !== 'directory') {
         console.warn('destination path must be directory!!');
@@ -47,8 +47,8 @@ Controller.prototype.copy = function(src, dst, progress, time, callback) {
     var path = src.substring(src.lastIndexOf('/') + 1, src.length), dstpath = dst + '/' + path;
     // src is a file, just copy it
     if(srcAttr === 'file') {
-        if(progress) {
-            this.fileOperation.copyFile(src, dstpath, time, callback);
+        if(flag) {
+            this.fileOperation.copyFile(src, dstpath, callback);
         } else {
             this.fileOperation.copyFile(src, dstpath);
         }
@@ -59,7 +59,7 @@ Controller.prototype.copy = function(src, dst, progress, time, callback) {
         // create folder in the target folder
         this.fileOperation.mkdir(dstpath, function(err) {
             if(err) {
-                console.log('controller:mkdir:: create folder:' + err);
+                alert('controller:mkdir:: create folder:' + err);
                 return;
             }
             // recursion copy file
@@ -68,13 +68,13 @@ Controller.prototype.copy = function(src, dst, progress, time, callback) {
                     var srcpath = src + '/' + item, tdstpath = dstpath + '/' + item, srcAttr = that.fileOperation.fileAttr(srcpath);
 
                     if(srcAttr === 'file') {
-                        if(progress) {
-                            that.fileOperation.copyFile(srcpath, tdstpath, time, callback);
+                        if(flag) {
+                            that.fileOperation.copyFile(srcpath, tdstpath, callback);
                         } else {
                             that.fileOperation.copyFile(srcpath, tdstpath);
                         }
                     } else if (srcAttr === 'directory') {
-                        that.copy(srcpath, dstpath, progress, time, callback);
+                        that.copy(srcpath, dstpath, progress, callback);
                     }
                 });
             });
@@ -82,14 +82,14 @@ Controller.prototype.copy = function(src, dst, progress, time, callback) {
     }
 };
 
-Controller.prototype.copyFile = function(srcpath, dstpath, progress, time, callback) {
+Controller.prototype.copyFile = function(srcpath, dstpath, progress, callback) {
     var that = this;
     this.fileOperation.isExists(dstpath, function(exists) {
         if(exists) {
-           that.copy(srcpath, dstpath, progress, time, callback);
+           that.copy(srcpath, dstpath, progress, callback);
         } else {
            that.fileOperation.mkdir(dstpath, function() {
-               that.copy(srcpath, dstpath, progress, time, callback);
+               that.copy(srcpath, dstpath, progress, callback);
            });
         }
     });
@@ -267,11 +267,21 @@ Controller.prototype.fileprogress = function(srcfile, dstfile, warp, callback, t
     console.log('正在计算......');
     var srcfileSize = this.fileOperation.filesize(srcfile, function(result) {
         var filesize = parseInt(result.split('\r\n')[0]);
+        var rate;
         // if file size larger than 10M, show progress bar
         if(filesize > 10000) {
-            warp.apply(that, [srcfile, dstfile, true, time, callback]);
+            warp.apply(that, [srcfile, dstfile, true, function(fileLength) {
+                // calculate file rate and show to view
+                rate = fileLength/filesize * 100;
+
+                // remember to set fileLength 0
+                if(rate === 100) {
+                    that.fileOperation.setFileLength(0);
+                }
+                callback(rate);
+            }]);
         } else {
-            warp.apply(that, [srcfile, dstfile, true, time, callback]);
+            warp.apply(that, [srcfile, dstfile]);
         }
     });
 };
@@ -279,8 +289,8 @@ Controller.prototype.fileprogress = function(srcfile, dstfile, warp, callback, t
 /**
  * test
  */
-var controller = new Controller('/');
+/*var controller = new Controller('/');
 //new Controller('/').fileprogress('D:/TokiSoftware/toki', '/', function(){});
 controller.fileprogress('E:/360Downloads', 'D:/test',controller.copyFile, function(fileLength) {
     console.log(fileLength);
-}, 100);
+});*/

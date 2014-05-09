@@ -281,7 +281,23 @@ $(function() {
                    remotepath = currentRemoteFolder;
                }
 
-               controller.copyFile($currentLocalfile.data('path'), remotepath);
+               windowPanel.setTitle('Progress Control');
+               windowPanel.setContent('Copy progress: calculating...');
+               var progresshock = windowPanel.progressBar();
+
+               // copy file with progress bar
+               controller.fileprogress($currentLocalfile.data('path'), remotepath, controller.copyFile, function(rate) {
+                    if(!rate) {
+                        windowPanel.alert('Error', 'Copy file error! this is a inner error!');
+                    }
+                    windowPanel.setContent('Copy progress: copying...');
+                    // show progress bar to view
+                    progresshock(rate);
+
+                    if(rate === 100) {
+
+                    }
+               });
           }}
         },
         {'itemName': 'Refresh...', 'itemClass': 'refresh', 'events': {'click': function() {
