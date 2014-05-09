@@ -291,6 +291,6 @@ Controller.prototype.fileprogress = function(srcfile, dstfile, warp, callback, t
  */
 /*var controller = new Controller('/');
 //new Controller('/').fileprogress('D:/TokiSoftware/toki', '/', function(){});
-controller.fileprogress('E:/360Downloads', 'D:/test',controller.copyFile, function(fileLength) {
+controller.fileprogress('D:/迅雷下载/[www.66e.cc]美国d长2.TS中字.rmvb', 'D:/test',controller.copyFile, function(fileLength) {
     console.log(fileLength);
 });*/

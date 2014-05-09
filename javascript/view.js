@@ -294,8 +294,9 @@ $(function() {
                     // show progress bar to view
                     progresshock(rate);
 
+                    // refresh remote tab
                     if(rate === 100) {
-
+                        $('.remote .refresh').trigger('click');
                     }
                });
           }}
