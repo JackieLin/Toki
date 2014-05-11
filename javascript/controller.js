@@ -255,7 +255,7 @@ Controller.prototype.closeFile = function(fd, callback) {
  * @param time
  * @param callback
  */
-Controller.prototype.fileprogress = function(srcfile, dstfile, warp, callback, time) {
+Controller.prototype.fileprogress = function(srcfile, dstfile, warp, callback) {
     if(!srcfile && !dstfile && !callback && !warp) {
         console.warn('filepath and time and callbakck must be exists!!');
         return;
@@ -265,7 +265,7 @@ Controller.prototype.fileprogress = function(srcfile, dstfile, warp, callback, t
     var speed = 0;
     var that = this;
     console.log('正在计算......');
-    var srcfileSize = this.fileOperation.filesize(srcfile, function(result) {
+    this.fileOperation.filesize(srcfile, function(result) {
         var filesize = parseInt(result.split('\r\n')[0]);
         var rate;
         // if file size larger than 10M, show progress bar

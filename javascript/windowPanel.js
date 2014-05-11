@@ -122,7 +122,7 @@ var WindowPanel = (function(window, undefined) {
             progressDiv.style.width = rate + '%';
 
             // remove itself
-            if(rate === 100) {
+            if(rate === 100 && div) {
                 div.parentNode.removeChild(div);
             }
         };

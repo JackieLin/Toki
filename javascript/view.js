@@ -267,19 +267,15 @@ $(function() {
                    return false;
                }
 
-               var remotepath = ($currentRemotefile) ? $currentRemotefile.data('path') : '';
-               if(!$currentRemotefile) {
-                   windowPanel.setContent('One of remote diredtory must be selected!!');
-                   windowPanel.alert();
-                   // user do not choose any folder, use current folder
-                   if(currentRemoteFolder === '/') {
-                       windowPanel.alert('Sorry, the system root should not upload!!');
-                       return false;
-                   }
-
-                   // change remotepath
-                   remotepath = currentRemoteFolder;
+               /*var remotepath = ($currentRemotefile) ? $currentRemotefile.data('path') : '';*/
+               // user do not choose any folder, use current folder
+               if(currentRemoteFolder === '/') {
+                   windowPanel.alert('Sorry, the system root should not upload!!');
+                   return false;
                }
+
+               // change remotepath
+               remotepath = currentRemoteFolder;
 
                windowPanel.setTitle('Progress Control');
                windowPanel.setContent('Copy progress: calculating...');
@@ -685,7 +681,6 @@ $(function() {
         /*remoteController.instanceScp();*/
         // set scp default
         remoteController.setScpDefaults();
-
         if(fileAttr === 'directory') {
             remoteController.remoteMkdir(hostpath, function(err) {
                 if(err) {
@@ -693,22 +688,32 @@ $(function() {
                     windowPanel.alert();
                     return;
                 }
+                windowPanel.setTitle('Progress Control');
+                windowPanel.setContent('Copy progress: calculating...');
+                var progresshock = windowPanel.progressBar();
 
-                remoteController.scp(filepath, hostpath, function(err) {
+                remoteController.scp(filepath, hostpath, function(err, rate) {
                     if(err) {
                         windowPanel.setContent('file scp failed::' + err);
                         windowPanel.alert();
                         return;
                     }
-                    remoteController.scp(projectconfpath, hostpath, function(err) {
-                        if(err) {
-                            windowPanel.setContent('scp file error!!');
-                            windowPanel.alert();
-                            return;
-                        }
-                        execSSH();
-                    });
-                });
+
+                    if(rate === undefined) {
+                        remoteController.scp(projectconfpath, hostpath, function(err) {
+                            if(err) {
+                                windowPanel.setContent('scp file error!!');
+                                windowPanel.alert();
+                                return;
+                            }
+                            execSSH();
+                        });
+                    } else {
+                        windowPanel.setContent('Copy progress: copying...');
+                        // show progress bar to view
+                        progresshock(rate);
+                    }
+                }, {'show': true});
             });
 
         } else if(fileAttr === 'file') {
@@ -729,23 +734,31 @@ $(function() {
                     execSSH();
                 });
             });*/
+            windowPanel.setTitle('Progress Control');
+            windowPanel.setContent('Copy progress: calculating...');
+            var progresshock = windowPanel.progressBar();
 
-            remoteController.scp(filepath, $sourcepath, function(err) {
+            remoteController.scp(filepath, $sourcepath, function(err, rate) {
                 if(err) {
                     windowPanel.setContent('scp file error::' + err);
                     windowPanel.alert();
                     return;
                 }
-
-                remoteController.scp(projectconfpath, $sourcepath, function(err) {
-                    if(err) {
-                        windowPanel.setContent('scp file error::' + err);
-                        windowPanel.alert();
-                        return;
-                    }
-                    execSSH();
-                });
-            });
+                if(rate === undefined) {
+                    remoteController.scp(projectconfpath, $sourcepath, function (err) {
+                        if (err) {
+                            windowPanel.setContent('scp file error::' + err);
+                            windowPanel.alert();
+                            return;
+                        }
+                        execSSH();
+                    });
+                } else {
+                    windowPanel.setContent('Remote copy progress: copying...');
+                    // show progress bar to view
+                    progresshock(rate);
+                }
+            }, {'show': true});
         }
 
         var execSSH = function() {
