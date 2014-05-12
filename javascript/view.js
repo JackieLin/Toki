@@ -50,7 +50,7 @@ $(function() {
      *   output li string
      */
     var displayFile = function(path, name, type) {
-        if(!path || !name || !type) {
+        if(!path || !type) {
             console.log('file path and type must be exites');
             return;
         }
