@@ -31,12 +31,12 @@ $(function() {
         windowPanel.confirm(eventData);
     });
 
-    $('.close').click(function() {
+    $('.close').parent('li').click(function() {
         // close window
         currWindow.close();
     });
 
-    $('.min').click(function() {
+    $('.min').parent('li').click(function() {
         currWindow.minimize();
     });
 
@@ -647,6 +647,8 @@ $(function() {
     });
 
     $('.surecommit').bind('click', function() {
+        // close remote panel
+        $('.commitupdates').css('display', 'none');
         var $sourcepath = $('.sourcepath').val(), filepath,
             host = $('.host').val(), port = $('.port').val(), username = $('.username').val(), password = $('.password').val();
 
@@ -709,7 +711,7 @@ $(function() {
                             execSSH();
                         });
                     } else {
-                        windowPanel.setContent('Copy progress: copying...');
+                        windowPanel.setContent('Remote copy progress: copying...');
                         // show progress bar to view
                         progresshock(rate);
                     }
@@ -780,20 +782,21 @@ $(function() {
                             }
                             var result = '', tmp;
                             stream.on('data', function(data, extended) {
-                                tmp = (extended === 'stderr' ? 'STDERR: ' : 'STDOUT: ') + data;
-                                result += tmp;
+                                //tmp = (extended === 'stderr' ? 'STDERR: ' : 'STDOUT: ') + data;
+                                result += data;
                             });
                             stream.on('end', function() {
+                                windowPanel.setTitle('result');
+                                windowPanel.setContent(result);
+                                windowPanel.alert();
+                                //console.log(result);
                                 console.log('Stream :: EOF');
                             });
                             stream.on('close', function() {
                                 console.log('Stream :: close');
                             });
                             stream.on('exit', function(code, signal) {
-                                console.log('Stream :: exit :: code: ' + code + ', signal: ' + signal);
-                                windowPanel.setContent(result);
-                                windowPanel.alert();
-                                console.log(result);
+                                //console.log('Stream :: exit :: code: ' + code + ', signal: ' + signal);
                                 remoteController.sshEnd();
                             });
                         });

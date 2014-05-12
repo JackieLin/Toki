@@ -31,7 +31,7 @@ if [ ! -f "$file" ];then
    exit 1
 fi
 
-sourcefile=`awk -F ' ' '{print $1"\t"$2}' $file`
+# sourcefile=`awk -F ' ' '{print $1"\t"$2}' $file`
 
 for list in $(awk -F ' ' '{print $1":"$2}' $file)
 do
@@ -54,9 +54,14 @@ do
         fi
     fi
 
+    # before copy file, it should be create folder
+    folder=`echo $targetfile | sed 's/\/[^\/]*$//g'`
+    if [ ! -d $folder ];then
+        mkdir -p $folder
+    fi
     # replace
     cp -f $sourcefile $targetfile
 done
 
-echo "Replace file success!"
+echo "Replace file success! Now you can restart server to use new feature"
 exit
