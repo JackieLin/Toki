@@ -276,11 +276,9 @@ $(function() {
 
                // change remotepath
                remotepath = currentRemoteFolder;
-
                windowPanel.setTitle('Progress Control');
                windowPanel.setContent('Copy progress: calculating...');
                var progresshock = windowPanel.progressBar();
-
                // copy file with progress bar
                controller.fileprogress($currentLocalfile.data('path'), remotepath, controller.copyFile, function(rate) {
                     if(!rate) {
