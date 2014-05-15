@@ -314,13 +314,13 @@ a > span {
  ***************************************************************************/
 #container > section.local{
     height: 100%;
-    width: 42%;
+    width: 39%;
     border-right: 1px rgb(166,166,166) dashed;
 }
 
 #container > section.remote {
     height: 100%;
-    width: 35%;
+    width: 38%;
 }
 
 .local > div, .remote > div {
@@ -333,10 +333,51 @@ a > span {
 
 .path {
     height: 30px;
+    vertical-align: middle;
 }
 
 .ipath {
-    width: 75%;
+    width: 60%;
+}
+
+/**-------------------------------------------------------------
+ **--------------------go ahead and back------------------------
+ ---------------------------------------------------------------**/
+.go {
+    font-family: 'icomoon';
+    float: left;
+    overflow: hidden;
+    line-height: 200%;   /** make sure text can align middle**/
+    width: 13%;
+}
+
+.go ul {
+    overflow: hidden;
+}
+
+.go li {
+    float: left;
+    margin-right: 5px;
+    width: 41%;
+    border-radius: 12px;
+}
+
+.go li:hover {
+    background: -webkit-linear-gradient(top,rgba(255,255,255,0.8) 0%, rgba(90,90,90,0.8) 80%);
+}
+
+.back, .ahead {
+    color: rgb(0, 0, 0);
+    font-style: normal;
+    padding-left: 24%;
+}
+
+.back:before {
+    content: "\e60d";
+}
+
+.ahead:before {
+    content: "\e60c";
 }
 
 .file {

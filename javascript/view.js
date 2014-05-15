@@ -778,7 +778,7 @@ $(function() {
                                 windowPanel.alert();
                                 return;
                             }
-                            var result = '', tmp;
+                            var result = '';
                             stream.on('data', function(data, extended) {
                                 //tmp = (extended === 'stderr' ? 'STDERR: ' : 'STDOUT: ') + data;
                                 result += data;
