@@ -177,12 +177,12 @@ $(function() {
         var target = event.currentTarget, $grandfather = $(target).parent().parent().parent().parent().parent(),type = $grandfather.attr('class');
         var path = '';
         if(type === 'local'){
-            path =  localFolderHistory.goBack();
+            path =  localFolderHistory.goAhead();
             currentLocalFolder = path;
             controller.setPath(path);
             showSubFolder(controller, 'localfile');
         }else{
-            path = remoteFolderHistory.goBack();
+            path = remoteFolderHistory.goAhead();
             currentRemoteFolder = path;
             controller.setPath(path);
             showSubFolder(controller, 'remotefile');
