@@ -118,7 +118,11 @@ $(function() {
                 controller.setPath(path);
                 currentLocalFolder = (type === 'localfile') ? path : currentLocalFolder;
                 currentRemoteFolder = (type === 'remotefile') ? path : currentRemoteFolder;
-                (type === 'localfile') ? localFolderHistory.push(path) : remoteFolderHistory.push(path);
+                if(type === 'localfile'){
+                    localFolderHistory.push(path);
+                }else{
+                    remoteFolderHistory.push(path);
+                }
                 showSubFolder(controller, classType);
             });
 
@@ -143,7 +147,11 @@ $(function() {
             currentRemoteFolder = (type === 'remote') ? value : currentRemoteFolder;
             controller.setPath(value);
             var subFolder = (type === 'local') ? showSubFolder(controller, 'localfile') : showSubFolder(controller, 'remotefile');
-            (type === 'local') ? localFolderHistory.push(value) : remoteFolderHistory.push(value);
+            if(type === 'local'){
+                localFolderHistory.push(value);
+            }else{
+                remoteFolderHistory.push(value);
+            }
         }
     });
 
