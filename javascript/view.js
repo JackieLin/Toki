@@ -11,6 +11,7 @@ $(function() {
     // get current window
     var gui = require('nw.gui'), currWindow = gui.Window.get();
     var windowPanel = new WindowPanel();
+    var localFolderHistory = new FolderHistory(), remoteFolderHistory = new FolderHistory();
     // show window
     currWindow.show();
     // pretend to be closed already
@@ -117,6 +118,7 @@ $(function() {
                 controller.setPath(path);
                 currentLocalFolder = (type === 'localfile') ? path : currentLocalFolder;
                 currentRemoteFolder = (type === 'remotefile') ? path : currentRemoteFolder;
+                (type === 'localfile') ? localFolderHistory.push(path) : remoteFolderHistory.push(path);
                 showSubFolder(controller, classType);
             });
 
@@ -141,6 +143,35 @@ $(function() {
             currentRemoteFolder = (type === 'remote') ? value : currentRemoteFolder;
             controller.setPath(value);
             var subFolder = (type === 'local') ? showSubFolder(controller, 'localfile') : showSubFolder(controller, 'remotefile');
+            (type === 'local') ? localFolderHistory.push(value) : remoteFolderHistory.push(value);
+        }
+    });
+
+    //register local and remote goBack event
+    $('.back').bind('click',function(event){
+        var target = event.currentTarget, $grandfather = $(target).parent().parent().parent().parent().parent(),type = $grandfather.attr('class');
+        var path = (type === 'local') ? localFolderHistory.goBack() : remoteFolderHistory.goBack();
+        controller.setPath(path);
+        if(type === 'local'){
+            currentLocalFolder = path;
+            showSubFolder(controller, 'localfile');
+        }else{
+            currentRemoteFolder = path;
+            showSubFolder(controller, 'remotefile');
+        }
+    });
+
+    //register local and remote goAhead event
+    $('.ahead').bind('click',function(event){
+        var target = event.currentTarget, $grandfather = $(target).parent().parent().parent().parent().parent(),type = $grandfather.attr('class');
+        var path = (type === 'local') ? localFolderHistory.goAhead() : remoteFolderHistory.goAhead();
+        controller.setPath(path);
+        if(type === 'local'){
+            currentLocalFolder = path;
+            showSubFolder(controller, 'localfile');
+        }else{
+            currentRemoteFolder = path;
+            showSubFolder(controller, 'remotefile');
         }
     });
 
