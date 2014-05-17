@@ -22,7 +22,7 @@ var FolderHistory = (function(window, undefined) {
         this._arrayObj.push(item);
         this._size += 1;
         this._cursor = this._size - 1;
-    }
+    };
 
     //get goAhead directory
     FolderHistory.prototype.goAhead = function() {
