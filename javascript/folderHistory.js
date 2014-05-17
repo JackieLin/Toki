@@ -26,7 +26,7 @@ var FolderHistory = (function(window, undefined) {
 
     //get goAhead directory
     FolderHistory.prototype.goAhead = function() {
-        if(this._cursor == (this._size - 1)){
+        if(this._cursor === (this._size - 1)){
             return this._arrayObj[this._cursor];
         }else{
             return this._arrayObj[++this._cursor];
@@ -36,7 +36,7 @@ var FolderHistory = (function(window, undefined) {
 
     //get goBack directory
     FolderHistory.prototype.goBack = function() {
-        if(this._cursor == 0){
+        if(this._cursor === 0){
             return this._arrayObj[this._cursor];
         }else{
             return this._arrayObj[--this._cursor];

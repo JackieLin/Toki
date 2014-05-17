@@ -150,12 +150,14 @@ $(function() {
     //register local and remote goBack event
     $('.back').bind('click',function(event){
         var target = event.currentTarget, $grandfather = $(target).parent().parent().parent().parent().parent(),type = $grandfather.attr('class');
-        var path = (type === 'local') ? localFolderHistory.goBack() : remoteFolderHistory.goBack();
+        var path = "";
         controller.setPath(path);
         if(type === 'local'){
+            path =  localFolderHistory.goBack();
             currentLocalFolder = path;
             showSubFolder(controller, 'localfile');
         }else{
+            path = remoteFolderHistory.goBack();
             currentRemoteFolder = path;
             showSubFolder(controller, 'remotefile');
         }
@@ -164,12 +166,14 @@ $(function() {
     //register local and remote goAhead event
     $('.ahead').bind('click',function(event){
         var target = event.currentTarget, $grandfather = $(target).parent().parent().parent().parent().parent(),type = $grandfather.attr('class');
-        var path = (type === 'local') ? localFolderHistory.goAhead() : remoteFolderHistory.goAhead();
+        var path = "";
         controller.setPath(path);
         if(type === 'local'){
+            path =  localFolderHistory.goBack();
             currentLocalFolder = path;
             showSubFolder(controller, 'localfile');
         }else{
+            path = remoteFolderHistory.goBack();
             currentRemoteFolder = path;
             showSubFolder(controller, 'remotefile');
         }
