@@ -159,14 +159,15 @@ $(function() {
     $('.back').bind('click',function(event){
         var target = event.currentTarget, $grandfather = $(target).parent().parent().parent().parent().parent(),type = $grandfather.attr('class');
         var path = '';
-        controller.setPath(path);
         if(type === 'local'){
             path =  localFolderHistory.goBack();
             currentLocalFolder = path;
+            controller.setPath(path);
             showSubFolder(controller, 'localfile');
         }else{
             path = remoteFolderHistory.goBack();
             currentRemoteFolder = path;
+            controller.setPath(path);
             showSubFolder(controller, 'remotefile');
         }
     });
@@ -175,14 +176,15 @@ $(function() {
     $('.ahead').bind('click',function(event){
         var target = event.currentTarget, $grandfather = $(target).parent().parent().parent().parent().parent(),type = $grandfather.attr('class');
         var path = '';
-        controller.setPath(path);
         if(type === 'local'){
             path =  localFolderHistory.goBack();
             currentLocalFolder = path;
+            controller.setPath(path);
             showSubFolder(controller, 'localfile');
         }else{
             path = remoteFolderHistory.goBack();
             currentRemoteFolder = path;
+            controller.setPath(path);
             showSubFolder(controller, 'remotefile');
         }
     });
