@@ -184,9 +184,9 @@ $(function() {
     });
 
     //register local and remote goBack event
-    $('.back').bind('click', function(event) {
+    $('.back').parent().bind('click', function(event) {
         var target = event.currentTarget,
-            $grandfather = $(target).parent().parent().parent().parent().parent(),
+            $grandfather = $(target).parent().parent().parent().parent(),
             type = $grandfather.attr('class');
         var path = '';
         if (type === 'local') {
@@ -203,9 +203,9 @@ $(function() {
     });
 
     //register local and remote goAhead event
-    $('.ahead').bind('click', function(event) {
+    $('.ahead').parent().bind('click', function(event) {
         var target = event.currentTarget,
-            $grandfather = $(target).parent().parent().parent().parent().parent(),
+            $grandfather = $(target).parent().parent().parent().parent(),
             type = $grandfather.attr('class');
         var path = '';
         if (type === 'local') {
